@@ -40,6 +40,10 @@ public class Test {
                     case 6:
                         contains();
                         break;
+                    case 7:
+                        get();
+                        break;
+
                     case 8:
                         return;
                     default:
@@ -47,7 +51,7 @@ public class Test {
                         break;
                 }
             }catch (Exception e ){
-                System.out.println("对不起，我出错了！！！");
+                System.out.println("对不起，你输入的数据有问题，请重新输入！！！");
                 e.printStackTrace();
             }
         }
@@ -56,16 +60,16 @@ public class Test {
     public static  void showMenu(){
         System.out.println(
                 "************JAVA版本的线性表***********************\n" +
-                        "  您可以根据如下提示进行操作：\n" +
-                        "按数字“0”查看当前线性表的元素个数\n" +
-                        "按数字“1”初始化一组数据\n" +
-                        "按数字“2”获取当前线性表所有元素\n"+
-                        "按数字“3”添加指定位置\n" +
-                        "按数字“4”进行删除操作\n" +
-                        "按数字“5”进行替换操作\n" +
-                        "按数字“6”判断是否已经存在一个元素\n" +
-                        "按数字“7”获得指定位置的元素\n"+
-                        "按数字“8”退出程序\n"+
+                        "**        您可以根据如下提示进行操作：\n" +
+                        "**   按数字“0”查看当前线性表的元素个数\n" +
+                        "**   按数字“1”初始化一组数据\n" +
+                        "**   按数字“2”获取当前线性表所有元素\n"+
+                        "**   按数字“3”添加指定位置\n" +
+                        "**   按数字“4”进行删除操作\n" +
+                        "**   按数字“5”进行替换操作\n" +
+                        "**   按数字“6”判断是否已经存在一个元素\n" +
+                        "**   按数字“7”获得指定位置的元素\n"+
+                        "**   按数字“8”退出程序\n"+
                 "***************************************************"
         );
     }
@@ -87,6 +91,7 @@ public class Test {
         System.out.println("请输入你要删除元素的位子：");
         int i=scanner.nextInt();
         listDao.remove(i);
+        getAllData();
     }
 
     public static void replace(){
@@ -95,6 +100,7 @@ public class Test {
         System.out.println("请输入你要替换的元素：");
         int data=scanner.nextInt();
         listDao.replace(i,data);
+        getAllData();
     }
 
     public static  void gitSize() {
@@ -108,7 +114,7 @@ public class Test {
         System.out.println("请输入你要插入的数据：");
         int data=scanner.nextInt();
         listDao.insert(i,data);
-        System.out.println("添加成功！！！");
+        getAllData();
     }
 
     public static void getAllData(){
@@ -124,6 +130,11 @@ public class Test {
         System.out.println("请输入你要判断的元素：");
         int data=scanner.nextInt();
         System.out.println(listDao.contains(data));
+    }
+    public static void get(){
+        System.out.println("请输入要指定元素的位置：");
+        int i=scanner.nextInt();
+        System.out.println("'"+i+"'号位元素为："+listDao.get(i));
     }
 
 }

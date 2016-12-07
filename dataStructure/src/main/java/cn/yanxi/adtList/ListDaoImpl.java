@@ -45,7 +45,7 @@ public class ListDaoImpl implements  ListDao{
         if (size>=elements.length){
             expendSpace();
         }
-        for(int j=size-1;j>i;j--){
+        for(int j=size;j>i;j--){
             elements[j]=elements[j-1];
         }
         elements[i]=object;
@@ -56,8 +56,11 @@ public class ListDaoImpl implements  ListDao{
         if (i>elements.length){
             expendSpace();
         }
-       elements=objects;
+        for (int j=0;j<objects.length;j++){
+            elements[j]=objects[j];
+        }
         size=i;
+        System.out.println("数组的长度：："+elements.length+"数组元素个数："+size);
     }
 
     public boolean insertBefore(Object p, Object object) {
