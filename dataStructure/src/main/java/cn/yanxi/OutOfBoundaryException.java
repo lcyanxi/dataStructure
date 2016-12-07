@@ -1,4 +1,4 @@
-package cn.yanxi.adtList;
+package cn.yanxi;
 
 /**
  * Created by lcyanxi on 16-12-6.

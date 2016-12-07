@@ -1,5 +1,7 @@
 package cn.yanxi.adtList;
 
+import cn.yanxi.ListDao;
+
 import java.util.Scanner;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Scanner;
  */
 public class Test {
 
-   private static  ListDao  listDao =new ListDaoImpl();
+   private static ListDao listDao =new ListDaoImpl();
    private static Scanner scanner;
 
 

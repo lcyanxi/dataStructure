@@ -1,9 +1,12 @@
 package cn.yanxi.adtList;
 
+import cn.yanxi.ListDao;
+import cn.yanxi.OutOfBoundaryException;
+
 /**
  * Created by lcyanxi on 16-12-6.
  */
-public class ListDaoImpl implements  ListDao{
+public class ListDaoImpl implements ListDao {
     private Object[] elements;//数据元素数组
     private int size;   //线性表中数据元素个数
     private final  int  LEN =10;//数组的默认大小
