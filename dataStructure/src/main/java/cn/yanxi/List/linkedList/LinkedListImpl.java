@@ -1,7 +1,7 @@
-package cn.yanxi.linkedList;
+package cn.yanxi.List.linkedList;
 
-import cn.yanxi.ListDao;
-import cn.yanxi.OutOfBoundaryException;
+import cn.yanxi.List.ListDao;
+import cn.yanxi.List.OutOfBoundaryException;
 
 /**
  * Created by lcyanxi on 16-12-7.

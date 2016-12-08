@@ -1,4 +1,4 @@
-package cn.yanxi.linkedList;
+package cn.yanxi.List.linkedList;
 
 /**
  * Created by lcyanxi on 16-12-7.

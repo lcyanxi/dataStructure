@@ -1,7 +1,7 @@
-package cn.yanxi.adtList;
+package cn.yanxi.List.adtList;
 
-import cn.yanxi.ListDao;
-import cn.yanxi.OutOfBoundaryException;
+import cn.yanxi.List.ListDao;
+import cn.yanxi.List.OutOfBoundaryException;
 
 /**
  * Created by lcyanxi on 16-12-6.

@@ -1,4 +1,4 @@
-package cn.yanxi.linkedList;
+package cn.yanxi.List.linkedList;
 
 
 /**
