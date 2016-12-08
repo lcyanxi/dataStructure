@@ -73,7 +73,7 @@ public class LinkedListImpl implements ListDao {
 
     public boolean contains(Object object) {
         SLNode p=head.getNext();
-        while (p.getNext()!=null){
+        while (p!=null){
             if (p.getData().equals(object))
                 return true;
             else
@@ -85,7 +85,7 @@ public class LinkedListImpl implements ListDao {
     public int indexOf(Object object) {
         SLNode p=head.getNext();
         int index=0;
-        while (p.getNext()!=null){
+        while (p!=null){
             if (p.getData().equals(object))
                 return  index;
             else {
@@ -107,31 +107,77 @@ public class LinkedListImpl implements ListDao {
        return;
     }
 
-    public boolean insertBefore(Object p, Object object) {
+    public boolean insertBefore(Object data, Object object) {
+        SLNode p=getPreNode(object);//找到要插入的目标元素的前驱
+       if (p!=null){
+           SLNode q=new SLNode(data,p.getNext());
+           p.setNext(q);
+           size++;
+           return true;
+       }
+
         return false;
     }
 
-    public boolean insertAfter(Object p, Object object) {
+    public boolean insertAfter(Object data, Object object) {
+        SLNode p=head.getNext();
+        while (p!=null){
+            if (p.getData().equals(object)){
+                SLNode q=new SLNode(data,p.getNext());//找到目标元素
+                p.setNext(q);
+                size++;
+                return  true;
+            }
+            else p=p.getNext();
+
+        }
         return false;
     }
 
     public Object remove(int i) throws OutOfBoundaryException {
-        return null;
+        if (i<0||i>size){
+            throw new OutOfBoundaryException("对不起，指定的下标'"+i+"'越界");
+        }
+        SLNode p=getPreNode(i);
+        p.setNext(p.getNext().getNext());
+        size--;
+
+        return p.getNext().getData();
     }
 
     public Object replace(int i, Object object) throws OutOfBoundaryException {
-        return null;
+        if (i<0||i>size){
+            throw new OutOfBoundaryException("对不起，指定的下标'"+i+"'越界");
+        }
+        Object target=getNode(i).getData();
+        getNode(i).setData(object);
+        return target;
     }
 
     public Object get(int i) throws OutOfBoundaryException {
-        return null;
+        if (i<0||i>size){
+            throw new OutOfBoundaryException("对不起，指定的下标'"+i+"'越界");
+        }
+        return getNode(i).getData();
     }
 
     public Object[] gitAll() {
-        return new Object[0];
+        SLNode p=head.getNext();
+        Object[] objects=new Object[size];
+        for (int i=0;i<size;i++){
+
+            objects[i]=p.getData();
+            p=p.getNext();
+        }
+        return objects;
     }
 
     public void saveData(int i, Object[] objects) {
-
+        size=i;
+        for (int j=0;j<objects.length;j++){
+            SLNode p=getPreNode(j);
+            SLNode q=new SLNode(objects[j],p.getNext());
+            p.setNext(q);
+        }
     }
 }

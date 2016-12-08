@@ -1,6 +1,8 @@
-package cn.yanxi.adtList;
+package cn.yanxi;
 
 import cn.yanxi.ListDao;
+import cn.yanxi.adtList.ListDaoImpl;
+import cn.yanxi.linkedList.LinkedListImpl;
 
 import java.util.Scanner;
 
@@ -9,7 +11,8 @@ import java.util.Scanner;
  */
 public class Test {
 
-   private static ListDao listDao =new ListDaoImpl();
+   //private static ListDao listDao =new ListDaoImpl();  //单链表的线性存储
+   private  static  ListDao listDao=new LinkedListImpl();//单链表的链式存储
    private static Scanner scanner;
 
 

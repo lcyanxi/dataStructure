@@ -5,6 +5,11 @@ package cn.yanxi;
  */
 public interface ListDao {
     /**
+     * 线性存储适合于查找   链式存储适合于插入和删除
+     */
+
+
+    /**
      *
      * @return 返回线性表的长度
      */

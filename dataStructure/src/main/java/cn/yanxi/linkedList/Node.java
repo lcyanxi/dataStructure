@@ -1,6 +1,5 @@
 package cn.yanxi.linkedList;
 
-import java.util.Date;
 
 /**
  * Created by lcyanxi on 16-12-7.
