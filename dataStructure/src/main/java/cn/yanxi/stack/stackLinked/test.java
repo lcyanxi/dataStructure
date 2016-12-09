@@ -9,7 +9,8 @@ import org.junit.Test;
 public class test {
     @Test
     public void test() throws Exception{
-        Stack stack=new StackLinkedByTop();
+       // Stack stack=new StackLinkedByTop();//带头节点，所有操作在头节点之后
+        Stack stack=new StackLinked();//不带头节点，所在操作在头结点上进行
         stack.push(1);
         stack.push(2);
         stack.push(3);

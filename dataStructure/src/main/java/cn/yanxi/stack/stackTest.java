@@ -10,7 +10,7 @@ import java.util.Scanner;
  * Created by lcyanxi on 16-12-8.
  */
 public class stackTest {
-   // private final static Stack stack=new StackArray();//栈的线性存储实现（基于数组）
+    //private final static Stack stack=new StackArray();//栈的线性存储实现（基于数组）
     //private  static  Stack stack=new StackLinked();//栈的链式存储（基于链表）
     private  final  static Stack stack=new StackLinkedByTop();
     private static  Scanner scanner;
@@ -85,12 +85,14 @@ public class stackTest {
     public static void getSize(){
         System.out.println("当前栈元素为："+stack.getSize());
     }
+
     public static void popAll() throws StackEmptyException{
         System.out.print("出栈序列：");
         while (!stack.isEmpty())
             System.out.print(" "+stack.pop());
         System.out.println("\n");
     }
+
     public static void pop() throws StackEmptyException{
             System.out.println("出栈元素为："+stack.pop());
             showData();

@@ -29,7 +29,6 @@ public class StackLinked implements Stack {
         SLNode p=new SLNode(object,top);
         top=p;
         size++;
-        System.out.println("top"+top.getData());
         return;
 
     }
@@ -38,7 +37,6 @@ public class StackLinked implements Stack {
         if (size<1){
             throw  new StackEmptyException("该栈为空！！！");
         }
-        System.out.print("data:"+top.getData());
         Object object=top.getData();
         top=top.getNext();
         size--;
@@ -49,11 +47,9 @@ public class StackLinked implements Stack {
         if (size<1){
             throw  new StackEmptyException("该栈为空！！！");
         }
-        System.out.println("top:"+top);
         Object object=null;
         if (top.getNext()!=null){
-            System.out.println("top.next"+top.getNext());
-          //object= top.getData();
+          object= top.getData();
         }
         return object;
     }

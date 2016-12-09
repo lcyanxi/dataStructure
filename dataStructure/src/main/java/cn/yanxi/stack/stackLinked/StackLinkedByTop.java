@@ -11,8 +11,9 @@ public class StackLinkedByTop implements Stack{
     private SLNode top;
 
     public StackLinkedByTop() {
+        System.out.println("初始化内存！！");
         size=0;
-        top=new SLNode();
+        top=new SLNode(null,null);
     }
 
     public int getSize() {
@@ -39,14 +40,14 @@ public class StackLinkedByTop implements Stack{
            Object object=top.getNext().getData();
            p.setNext(top.getNext().getNext());
            size--;
-        return null;
+        return object;
     }
 
     public Object getTop() throws StackEmptyException {
         if (size<1){
             throw  new StackEmptyException("该栈为空！！！");
         }
-        System.out.println("top"+top);
+        System.out.println("top"+top+"size:"+size);
         return top.getNext().getData();
     }
 
