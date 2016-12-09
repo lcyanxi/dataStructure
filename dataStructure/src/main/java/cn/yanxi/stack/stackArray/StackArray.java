@@ -1,9 +1,12 @@
-package cn.yanxi.stack;
+package cn.yanxi.stack.stackArray;
+
+import cn.yanxi.stack.Stack;
+import cn.yanxi.stack.StackEmptyException;
 
 /**
  * Created by lcyanxi on 16-12-8.
  */
-public class StackArray implements  Stack {
+public class StackArray implements Stack {
 
     private final int LEN=10;
     private int top;//栈顶指针

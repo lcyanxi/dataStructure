@@ -1,12 +1,18 @@
 package cn.yanxi.stack;
 
+import cn.yanxi.stack.stackArray.StackArray;
+import cn.yanxi.stack.stackLinked.StackLinked;
+import cn.yanxi.stack.stackLinked.StackLinkedByTop;
+
 import java.util.Scanner;
 
 /**
  * Created by lcyanxi on 16-12-8.
  */
 public class stackTest {
-    private final static Stack stack=new StackArray();
+   // private final static Stack stack=new StackArray();//栈的线性存储实现（基于数组）
+    //private  static  Stack stack=new StackLinked();//栈的链式存储（基于链表）
+    private  final  static Stack stack=new StackLinkedByTop();
     private static  Scanner scanner;
 
     public static void main(String args[]){
@@ -61,7 +67,7 @@ public class stackTest {
         );
     }
 
-    public static  void initData(){
+    public static  void initData() throws StackEmptyException{
         System.out.println("请输入你要初始化元素的个数：");
         scanner=new Scanner(System.in);
         int i=scanner.nextInt();
@@ -80,6 +86,7 @@ public class stackTest {
         System.out.println("当前栈元素为："+stack.getSize());
     }
     public static void popAll() throws StackEmptyException{
+        System.out.print("出栈序列：");
         while (!stack.isEmpty())
             System.out.print(" "+stack.pop());
         System.out.println("\n");
