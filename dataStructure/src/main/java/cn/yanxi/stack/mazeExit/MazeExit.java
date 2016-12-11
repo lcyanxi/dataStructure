@@ -3,12 +3,21 @@ package cn.yanxi.stack.mazeExit;
 import cn.yanxi.stack.Stack;
 import cn.yanxi.stack.StackEmptyException;
 import cn.yanxi.stack.stackArray.StackArray;
-import cn.yanxi.stack.stackLinked.StackLinked;
 
 /**
  * Created by lcyanxi on 16-12-11.
  */
 public class MazeExit {
+
+    /*
+    思路：1.用栈来模拟，后进先出
+         2.初始化一个二维数组作为迷宫
+         3.把起点入栈，作为栈顶元素
+         4.判断栈顶元素四周是否有有效的点（通过cell.c=='0'） 如果有入栈，没有让该点出栈
+         5.直到栈顶元素等于终点元素
+         6.出栈  并将元素置为‘*’(判断头元素和头的下一个元素是否连续)
+
+     */
 
 
     public void mazeExit(char[][] maze,int sx,int sy,int ex,int ey) throws StackEmptyException{
@@ -106,7 +115,7 @@ public class MazeExit {
     private void printMaze(Cell[][] cells){
         for (int i=0;i<cells.length;i++){
             for (int j=0;j<cells[i].length;j++){
-                System.out.print(cells[i][j].c);
+                System.out.print("  "+cells[i][j].c);
             }
             System.out.println();
         }

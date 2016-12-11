@@ -35,8 +35,8 @@ public class test {
         System.out.println("请初始化一个二维数组的模拟迷宫：");
         try{
             initData();
-        }catch (StackEmptyException e){
-            System.out.println("我找不到！！！");
+        }catch (Exception e){
+            System.out.println("您输入的参数有问题，请重新输入！！！");
         }
     }
 
@@ -48,7 +48,10 @@ public class test {
         char[][] objects=new char[row][los];
         for (int i=0;i<row;i++){
             for (int j=0;j<los;j++){
-                objects[i][j]=(char) scanner.nextInt();
+                int b = scanner.nextInt();
+                   String s = String.valueOf(b);
+                   char c = s.charAt(0);
+                objects[i][j]=c;
             }
         }
         System.out.println("请指定一个起点坐标值：");
