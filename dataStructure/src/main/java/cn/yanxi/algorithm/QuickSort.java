@@ -1,7 +1,5 @@
 package cn.yanxi.algorithm;
 
-import cn.yanxi.sort.QSort;
-
 /**
  * Created by lcyanxi on 2018/6/29.
  * 快速排序算法
