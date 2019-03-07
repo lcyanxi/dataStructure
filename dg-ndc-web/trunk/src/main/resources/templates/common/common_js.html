@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="common_js">
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script th:src="@{/bootstrap/js/jquery-1.8.3.min.js}" src="../../static/bootstrap/js/jquery-1.8.3.min.js"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.min.js}" src="../../static/bootstrap/js/bootstrap.min.js"></script>
+
+    <!--templates.commonmmon script for all pages-->
+    <script th:src="@{/bootstrap/js/common-scripts.js}" src="../../static/bootstrap/js/common-scripts.js"></script>
+    <!--script for 提示框-->
+    <script th:src="@{/bootstrap/js/xcConfirm.js}" src="/static/bootstrap/js/xcConfirm.js"></script>
+    <!--消息提示框-->
+    <script th:src="@{/bootstrap/js/toastr.min.js}" src="/static/bootstrap/js/toastr.min.js"></script>
+    <script>
+
+        /*        var zNodes = [
+                    {id: 1, pId: 0, name: "首页", hasChild: 0,href:"javascript:;",icon:"icon-home"},
+                    {id: 2, pId: 0, name: "权限管理",  hasChild: 0,href:"javascript:;" ,icon:"icon-user"},
+                    {id: 21, pId: 2, name: "B1",  hasChild: 0,href:"#",icon:""},
+                    {id: 22, pId: 2, name: "B2",  hasChild: 0,href:"#",icon:""},
+                    {id: 23, pId: 2, name: "B3",  hasChild: 0,href:"#",icon:""},
+                    {id: 3, pId: 0, name: "菜谱标签管理",  hasChild: 1,href:"javascript:;",icon:"icon-edit-sign"},
+                    {id: 4, pId: 0, name: "标签信息管理",  hasChild: 0,href:"/chron/toTagInfoPage",icon:"icon-edit-sign"},
+                    {id: 5, pId: 0, name: "食材标签管理",  hasChild: 0,href:"/chron/toFoodTagPage",icon:"icon-edit-sign"},
+                    {id: 6, pId: 0, name: "营养素标签管理",  hasChild: 0,href:"/chron/toNutrimentTagPage",icon:"icon-edit-sign"},
+                    {id: 7, pId: 0, name: "用户画像",  hasChild: 0,href:"/index/userProfile",icon:"icon-bar-chart"},
+                    {id: 31, pId: 3, name: "C1",  hasChild: 1,href:"javascript:;",icon:""},
+                    {id: 32, pId: 3, name: "C2",  hasChild: 0,href:"#",icon:""},
+                    {id: 33, pId: 3, name: "C3",  hasChild: 0,href:"#",icon:""},
+                    {id: 34, pId: 31, name: "x",  hasChild: 0,href:"#",icon:""},
+                    {id: 35, pId: 31, name: "y",  hasChild: 0,href:"#",icon:""},
+                    {id: 36, pId: 31, name: "z",  hasChild: 1,href:"#",icon:""},
+                    {id: 37, pId: 36, name: "z1123",  hasChild: 1,href:"javascript:;",icon:""},
+                    {id: 38, pId: 37, name: "z123123123",  hasChild: 0,href:"#",icon:""}
+                ];*/
+
+
+
+        function treeMenu(a) {
+            this.tree = a || [];
+            this.groups = {};
+        }
+
+        treeMenu.prototype = {
+
+            init: function (pid) {
+                this.group();
+                return this.getDom(this.groups[pid]);
+            },
+            group: function () {
+                for (var i = 0; i < this.tree.length; i++) {
+                    if (this.groups[this.tree[i].pId]) {
+                        this.groups[this.tree[i].pId].push(this.tree[i]);
+                    } else {
+                        this.groups[this.tree[i].pId] = [];
+                        this.groups[this.tree[i].pId].push(this.tree[i]);
+                    }
+                }
+            },
+            getDom: function (a) {
+                if (!a) {
+                    return ''
+                }
+                var html = '<ul class="sub" >';
+                for (var i = 0; i < a.length; i++) {
+                    if (a[i].hasChild == 1) {
+                        html += '<li class="sub-menu">' +
+                            '<a href="' + a[i].url + '">' +
+                            '<i class="' + a[i].icon + '"></i>' +
+                            '<span>' + a[i].name + '</span>' +
+                            '<span class="arrow"></span>' +
+                            '</a>';
+                        html += this.getDom(this.groups[a[i].id]);
+                    } else {
+                        html += '<li><a href="' + a[i].url + '">' +
+                            '<i class="' + a[i].icon + '"></i>' +
+                            '<span>' + a[i].name + '</span></a>';
+                    }
+                    html += '</li>';
+                }
+                html += '</ul>';
+                return html;
+            }
+        };
+        $(document).ready(function () {
+            $.get("/index/queryMenu", function (data) {
+                var html = new treeMenu($.parseJSON(data)).init(0);
+                $('#sidebar').append(html);
+                $('#sidebar').find('ul')[0].setAttribute("class", "sidebar-menu");
+                //解决动态渲染无法展开子标签
+                $(".sub-menu>a").click(function () {
+                    $(this).parent().siblings().find(".sub").slideUp();
+                    $(this).parent().find(".sub").slideToggle();
+                });
+            });
+        });
+
+        /*
+          这种渲染方式也可以，就是构建层级管理的数据源比较麻烦
+        var menudata = {
+            //name:"顶级菜单",
+            "id1":{name:"一级菜单1",link:"link"},
+            "id2":{name:"一级菜单2",link:"link"},
+            "id3":{name:"一级菜单3",link:"link"},
+            "id4":{
+                name:"一级菜单4",link:"javascript:;",
+                child: {
+                    "id5":{name:"二级菜单1",link:"link"},
+                    "id6":{name:"二级菜单2",link:"link"},
+                    "id7":
+                        {
+                            name:"二级菜单3",
+                            link:"javascript:;",
+                            child:{
+                                "id8": {
+                                    name:"三级菜单1",
+                                    link:"javascript:;",
+                                    child:{
+                                        "四级菜单":{name:"二级菜单2",link:"link"}
+                                    }
+                                }
+                            }
+                        }
+                }
+            }
+        }
+
+        var initmenu = function(dropdown,menudata) {
+            var dropdown = $(dropdown);
+            function createNode(data) {
+                var html ='<ul class="sub">';
+                for(var key in data) {
+                    if(data[key]["child"]) {
+                        html +='<li class="sub-menu"><a href="'+data[key]["link"]+'" onclick="'+data[key]["click"]+'"><span>'+data[key]["name"]+'</span><span class="arrow"></span></a>';
+                        html += createNode(data[key]["child"]);
+                    } else {
+                        html +='<li  class="sub-menu"><a href="'+data[key]["link"]+'" onclick="'+data[key]["click"]+'">'+data[key]["name"]+'</a>';
+                    }
+                    dropdown.append('</li>');
+                }
+                html +='</ul>';
+                return html;
+            }
+            var html = createNode(menudata);
+            dropdown.append(html);
+            $('#sidebar').find('ul')[0].setAttribute("class","sidebar-menu");
+            $(".sub-menu>a").click(function () {
+                $(this).parent().siblings().find(".sub").slideUp();
+                $(this).parent().find(".sub").slideToggle();
+            });
+        };
+        initmenu("#sidebar",menudata);*/
+
+    </script>
+</div>
+
+</body>
+</html>

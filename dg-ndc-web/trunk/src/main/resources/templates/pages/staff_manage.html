@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                        <h4 class="modal-title">用户管理</h4>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                    <table class="table table-striped border-top" id="sample_1">
+                        <!--头部显示所包含的内容-->
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>用户ID</th>
+                            <th>用户名称</th>
+                            <th>授权</th>
+                            <th>编辑</th>
+                            <th>删除</th>
+                        </tr>
+                        </thead>
+                        <!--头部显示所包含的内容 结束-->
+                        <tbody id="tbody">
+                        <tr class="odd gradeX" th:each="user,iterStat:${userList}">
+                            <th th:text="${user.id}"></th>
+                            <td th:text="${user.uid}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td>
+                                <button class="btn btn-primary btn-xs" onclick="authorization(this)"
+                                        th:id="${user.uid}" data-toggle="modal"
+                                        data-target="#update_staff_myModal">
+                                    <i class="icon-pencil">授权</i></button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-xs" onclick="editInfo(this)"
+                                        th:id="${iterStat.index}" data-toggle="modal"
+                                        data-target="#update_staff_myModal">
+                                    <i class="icon-pencil">编辑</i></button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-xs" onclick="delete_staff(this)"
+                                        th:id="${user.id}">
+                                    <i class="icon-trash ">删除</i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+
+
+<!-- 更新模态框（Modal） -->
+<div class="modal fade" id="update_myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">更新疾病标签</h4>
+            </div>
+            <!-- page start 添加的主要部分-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <form  id="update_from" class="form-horizontal tasi-form">
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">状态</label>
+                                    <div class="col-lg-8">
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="2">专家审核</option>
+                                            <option value="1">人工审核</option>
+                                            <option value="0">后续可以删除</option>
+                                            <option value="-1">删除</option>
+                                        </select>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">级别</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" id="level" name="level"  class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group has-success">
+                                    <div class="col-lg-8">
+                                        <input type="hidden" placeholder="" id="id" name="id"  class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-lg-3">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6">
+                                        <button id="update_button" class="btn btn-primary" type="button">更新</button>
+                                        <h4 id="message" class="help-block text-danger text-center"></h4>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- page end 添加的主要部分 结束-->
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div><!--添加srctype modal完-->
+
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<script th:src="@{/bootstrap/js/jquery.dataTables.min.js}" src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+<script th:src="@{/bootstrap/js/DT_bootstrap.js}" src="/static/bootstrap/js/DT_bootstrap.js"></script>
+<script th:src="@{/bootstrap/js/jquery.form.js}" src="/static/bootstrap/js/jquery.form.js"></script>
+
+<script>
+
+
+    /**
+     * 更新触发模态框
+     * @param obj
+     */
+    function editInfo(obj) {
+
+        var total = $("#tbody").find("tr").length;
+        var table = document.getElementById("tbody");
+        var id;
+        //获取当前页面中所有在运行中的jobId
+        if (total > 1) {
+            for (var index = 0; index < total; index++) {
+                var target = table.rows[index].cells[0].innerHTML;
+                if (target == obj) {
+                    id = index;
+                    break;
+                }
+            }
+        }
+
+        var cookId = table.rows[id].cells[1].innerHTML;
+        var cookName = table.rows[id].cells[2].innerHTML;
+        var tagId = table.rows[id].cells[3].innerHTML;
+        var tag = table.rows[id].cells[4].innerHTML;
+        var status = table.rows[id].cells[5].innerHTML;
+        var level = table.rows[id].cells[6].innerHTML;
+
+        //向模态框中传值
+        $("#id").val(obj);
+        $('#cookId').val(cookId);
+        $('#cookName').val(cookName);
+        $('#tagId').val(tagId);
+        $('#tag').val(tag);
+
+        //遍历所有status option得值
+        $("#status option").each(function(){
+            if($(this).text()==status){
+                $(this).attr('selected','selected');
+            }
+        });
+
+        $('#level').val(level);
+
+        $('#update_myModal').modal('show');
+    }
+
+    function authorization(obj) {
+        var uid = $(obj).attr("id");
+        window.location.href="/index/permission/"+uid+"";
+    }
+    /**
+     * 更新tag 操作
+     *
+     */
+    $('#update_button').click(function () {
+        $("#update_from").ajaxSubmit({
+            url : "/chron/updateChronTag",
+            type : "post",
+            dataType : 'json',
+            success : function(data) {
+                window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.info, {
+                    onOk: function () {
+                        location.reload();
+                    }
+                });
+            },
+            error : function(data) {
+                //发送失败
+                if (status == "timeout") {
+                    $("#message").text("发送超时请重发");
+                }
+            }
+        });
+    });
+
+
+
+
+
+
+</script>
+</body>
+</html>

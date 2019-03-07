@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+    <!--日期插件-->
+    <link th:href="@{/bootstrap/css/daterangepicker-bs3.css}"
+          href="/static/bootstrap/css/daterangepicker-bs3.css" rel="stylesheet" media="screen">
+
+
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                        <h4 class="modal-title">用户留存分析</h4>
+                    </div>
+                    <div class="row" style="height: 20px"></div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>渠道:</label>
+                            <label class="select-inline">
+                                <select class="form-control" id="appId" style="width: auto;">
+                                    <option value="0">豆果美食-全部</option>
+                                    <option value="4">豆果美食-android</option>
+                                    <option value="3">豆果美食-ios</option>
+                                </select>
+                            </label>
+                            <label>类型:</label>
+                            <label class="select-inline">
+                                <select class="form-control" id="type" style="width: auto;">
+                                    <option value="new_user">新增</option>
+                                    <option value="day_live">日活</option>
+                                    <option value="cook">菜谱</option>
+                                    <option value="note">笔记</option>
+                                    <option value="mall">电商</option>
+                                    <option value="live">课堂</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group date form_date" data-date=""
+                                 data-date-format="yyyy-MM-dd" data-link-field="dtp_input2"
+                                 data-link-format="yyyy-mm-dd">
+                                <span class="input-group-addon"><span
+                                        class="glyphicon glyphicon-calendar"></span></span>
+                                <input type="text" name="reservation" style="width: 200px" id="reservation"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-success" id="search_button"><i class="icon-search"></i>查询</button>
+                        </div>
+                    </div>
+                    <!-- /. ROW  -->
+                    <div class="row" style="height: 20px"></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!--   Kitchen Sink -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <span id="title">新增用户</span>留存
+                                        </div>
+                                        <div class="col-md-6" align="right">
+                                            <button class="btn" id="day_button">日</button>
+                                            <!--                                            <button class="btn">周</button>-->
+                                            <button class="btn" id="month_button">月</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" align="center">
+                                    <p>+N留存率</p>
+                                </div>
+                                <div class="panel-body" id="day_div">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="dayTable">
+                                            <thead>
+                                            <tr>
+                                                <th>首次使用时间</th>
+                                                <th>新增用户</th>
+                                                <th>1天后</th>
+                                                <th>2天后</th>
+                                                <th>3天后</th>
+                                                <th>4天后</th>
+                                                <th>5天后</th>
+                                                <th>6天后</th>
+                                                <th>7天后</th>
+                                                <th>14天后</th>
+                                                <th>30天后</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>20181119</td>
+                                                <td>204102</td>
+                                                <td>45%</td>
+                                                <td>36%</td>
+                                                <td>24%</td>
+                                                <td>12%</td>
+                                                <td>8%</td>
+                                                <td>5%</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                            </tr>
+                                            <tr>
+                                                <td>20181118</td>
+                                                <td>36512</td>
+                                                <td>45%</td>
+                                                <td>36%</td>
+                                                <td>24%</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="panel-body" hidden>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>首次使用时间</th>
+                                                <th>新增用户</th>
+                                                <th>1周后</th>
+                                                <th>2周后</th>
+                                                <th>3周后</th>
+                                                <th>4周后</th>
+                                                <th>5周后</th>
+                                                <th>6周后</th>
+                                                <th>7周后</th>
+                                                <th>8周后</th>
+                                                <th>9周后</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>20181119</td>
+                                                <td>204102</td>
+                                                <td>45%</td>
+                                                <td>36%</td>
+                                                <td>24%</td>
+                                                <td>12%</td>
+                                                <td>8%</td>
+                                                <td>5%</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                            </tr>
+                                            <tr>
+                                                <td>20181118</td>
+                                                <td>36512</td>
+                                                <td>45%</td>
+                                                <td>36%</td>
+                                                <td>24%</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="panel-body" id="month_div">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="monthTable">
+                                            <thead>
+                                            <tr>
+                                                <th>首次使用时间</th>
+                                                <th>新增用户</th>
+                                                <th>1月后</th>
+                                                <th>2月后</th>
+                                                <th>3月后</th>
+                                                <th>4月后</th>
+                                                <th>5月后</th>
+                                                <th>6月后</th>
+                                                <th>7月后</th>
+                                                <th>8月后</th>
+                                                <th>9月后</th>
+                                                <th>10月后</th>
+                                                <th>11月后</th>
+                                                <th>12月后</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>20181119</td>
+                                                <td>204102</td>
+                                                <td>45%</td>
+                                                <td>36%</td>
+                                                <td>24%</td>
+                                                <td>12%</td>
+                                                <td>8%</td>
+                                                <td>5%</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                            </tr>
+                                            <tr>
+                                                <td>20181118</td>
+                                                <td>36512</td>
+                                                <td>45%</td>
+                                                <td>36%</td>
+                                                <td>24%</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                                <td>---</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End  Kitchen Sink -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+
+
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<script th:src="@{/bootstrap/js/jquery.dataTables.min.js}" src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+<script th:src="@{/bootstrap/js/DT_bootstrap.js}" src="/static/bootstrap/js/DT_bootstrap.js"></script>
+<script th:src="@{/bootstrap/js/moment.js}" src="/static/bootstrap/js/moment.js"></script>
+<script th:src="@{/bootstrap/js/daterangepicker.js}" src="/static/bootstrap/js/daterangepicker.js"></script>
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#reservation').val(moment().subtract('days', 7).format('YYYY-MM-DD') + ' - ' + moment().format('YYYY-MM-DD'));
+        $("input[name='reservation']").daterangepicker(
+            {
+                // autoApply: true,
+                autoUpdateInput: false,
+                // alwaysShowCalendars: true,
+                ranges: {
+                   // '今天': [moment(), moment()],
+                    // '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '近7天': [moment().subtract(7, 'days'), moment()],
+                    '近30天': [moment().subtract(30, 'days'), moment()],
+                    '近60天': [moment().subtract(60, 'days'), moment()]
+                },
+                locale: {
+                    format: "YYYY/MM/DD",
+                    separator: " - ",
+                    applyLabel: "确认",
+                    cancelLabel: "清空",
+                    fromLabel: "开始时间",
+                    toLabel: "结束时间",
+                    customRangeLabel: "自定义",
+                    daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+                    monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
+                }
+            }
+        ).on('cancel.daterangepicker', function (ev, picker) {
+            $("#reservation").val("请选择日期范围");
+            $("#startTime").val("");
+            $("#endTime").val("");
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $("#startTime").val(picker.startDate.format('YYYY-MM-DD'));
+            $("#endTime").val(picker.endDate.format('YYYY-MM-DD'));
+            $("#reservation").val(picker.startDate.format('YYYY-MM-DD') + "-" + picker.endDate.format('YYYY-MM-DD'));
+        });
+        // 获取数据
+        getDate("date");
+    });
+
+
+
+    /**
+     * 获取请求源数据
+     */
+    function getDate(obj) {
+        var appId = $("#appId").val();
+        var type = $("#type").val();
+        var date = $("#reservation").val();
+        var timeType = obj;
+        $.get("/user_retain/queryData", {
+            appId: appId,
+            date: date,
+            type: type,
+            timeType: timeType
+        }, function (msg) {
+            if (timeType == "date") {
+                $("#day_div").css("display", "block");
+                $("#month_div").css("display", "none");
+                $("#day_button").attr("class", "btn btn-success");
+                $("#month_button").attr("class", "btn");
+                $("#dayTable tr:not(:first)").empty();
+                $("#dayTable").append(showDayTable(msg));
+            } else {
+                $("#day_div").css("display", "none");
+                $("#month_div").css("display", "block");
+                $("#day_button").attr("class", "btn");
+                $("#month_button").attr("class", "btn btn-success");
+                $("#monthTable tr:not(:first)").empty();
+                $("#monthTable").append(showMonthTable(msg));
+            }
+        });
+    }
+
+    // 点击月份按钮
+    $("#month_button").click(function () {
+        toastr.success("正在查询数据......");
+        getDate("month");
+    });
+    $("#day_button").click(function () {
+        toastr.success("正在查询数据......");
+        getDate("date");
+    });
+
+    /**
+     * 日期改变触发事件
+     */
+    $("#search_button").click(function () {
+        $("#title").html($("#type option:selected").text());
+        toastr.success("正在查询数据......");
+        getDate("date");
+    });
+
+    /**
+     * 渲染表格内容数据
+     * @param data
+     * @returns {*}
+     */
+    function showDayTable(data) {
+        var html;
+        var jsonObject = JSON.parse(data);
+        $.each(jsonObject, function (i, item) {
+            html += "<tr>" +
+                "<td>" + item[0] + "</td>" +
+                "<td>" + item[1] + "</td>" +
+                "<td " + item[2].color + ">" + item[2].data + "</td>" +
+                "<td " + item[3].color + ">" + item[3].data + "</td>" +
+                "<td " + item[4].color + ">" + item[4].data + "</td>" +
+                "<td " + item[5].color + ">" + item[5].data + "</td>" +
+                "<td " + item[6].color + ">" + item[6].data + "</td>" +
+                "<td " + item[7].color + ">" + item[7].data + "</td>" +
+                "<td " + item[8].color + ">" + item[8].data + "</td>" +
+                "<td " + item[9].color + ">" + item[9].data + "</td>" +
+                "<td " + item[10].color + ">" + item[10].data + "</td>" +
+                "<tr>";
+        });
+        return html;
+    }
+
+    /**
+     * 渲染表格内容数据
+     * @param data
+     * @returns {*}
+     */
+    function showMonthTable(data) {
+        var html;
+        var jsonObject = JSON.parse(data);
+        $.each(jsonObject, function (i, item) {
+            html += "<tr>" +
+                "<td>" + item[0] + "</td>" +
+                "<td>" + item[1] + "</td>" +
+                "<td " + item[2].color + ">" + item[2].data + "</td>" +
+                "<td " + item[3].color + ">" + item[3].data + "</td>" +
+                "<td " + item[4].color + ">" + item[4].data + "</td>" +
+                "<td " + item[5].color + ">" + item[5].data + "</td>" +
+                "<td " + item[6].color + ">" + item[6].data + "</td>" +
+                "<td " + item[7].color + ">" + item[7].data + "</td>" +
+                "<td " + item[8].color + ">" + item[8].data + "</td>" +
+                "<td " + item[9].color + ">" + item[9].data + "</td>" +
+                "<td " + item[10].color + ">" + item[10].data + "</td>" +
+                "<td " + item[11].color + ">" + item[11].data + "</td>" +
+                "<td " + item[12].color + ">" + item[12].data + "</td>" +
+                "<td " + item[13].color + ">" + item[13].data + "</td>" +
+                "<tr>";
+        });
+        return html;
+    }
+
+
+</script>
+</body>
+</html>
+

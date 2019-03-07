@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+ <!--title 要显示的标题-->
+<div th:fragment="common_css">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="brainy"/>
+    <meta name="keyword" content="EntTax"/>
+    <link rel="shortcut icon" th:href="@{/bootstrap/img/favicon.ico}" href="../../static/bootstrap/img/favicon.ico"/>
+
+    <title>豆果DC后台管理系统</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" href="../../static/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/bootstrap-reset.css}" href="../../static/bootstrap/css/bootstrap-reset.css" rel="stylesheet"/>
+    <!-- Custom styles for this template //css 模板样式-->
+    <link th:href="@{/bootstrap/css/font-awesome.css}" href="../../static/bootstrap/css/font-awesome.css"
+          rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/style.css}" href="../../static/bootstrap/css/style.css" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/style-responsive.css}" href="../../static/bootstrap/css/style-responsive.css" rel="stylesheet"/>
+    <link th:href="@{/bootstrap/css/jquery.dataTables.min.css}" href="../../static/bootstrap/css/jquery.dataTables.min.css" rel="stylesheet"/>
+    <!--alert提示消息-->
+    <link th:href="@{/bootstrap/css/xcConfirm.css}" href="/static/bootstrap/css/xcConfirm.css" rel="stylesheet">
+    <!--消息提示-->
+    <link rel="stylesheet" th:href="@{/bootstrap/css/toastr.css}" href="/static/bootstrap/css/toastr.css">
+</div>
+</html>

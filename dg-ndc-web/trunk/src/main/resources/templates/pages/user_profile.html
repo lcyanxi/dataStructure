@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+    <!--日期插件-->
+    <link th:href="@{/bootstrap/css/bootstrap-datetimepicker.min.css}"
+          href="/static/bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                        <h4 class="modal-title">用户画像</h4>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                    <div class="row">
+                        <div class="col-md-9">
+                            <!--   Kitchen Sink -->
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div>
+                                        <table class="table" frame=void>
+                                            <tbody>
+                                            <tr>
+                                                <th>人群选择</th>
+                                                <th>
+                                                    <select class="form-control" id="crowd">
+                                                        <option value="all" checked="checked">全部</option>
+                                                        <option value="mall">电商</option>
+                                                        <option value="live_class">课堂</option>
+                                                        <option value="cook">菜谱</option>
+                                                        <option value="note">笔记</option>
+                                                    </select></th>
+                                                <th>一级标签</th>
+                                                <th>
+                                                    <select class="form-control" id="mySelect">
+                                                        <option value="all">全部</option>
+                                                        <option value="sex">性别</option>
+                                                        <option value="income">收入</option>
+                                                        <option value="province">省份</option>
+                                                        <option value="city">城市</option>
+                                                        <option value="generation">年代</option>
+                                                        <option value="profession">职业</option>
+                                                        <option value="taboos.name">忌口</option>
+                                                        <option value="chronicillness.name">疾病</option>
+                                                        <option value="interested_tags.tag">兴趣</option>
+                                                        <option value="states.name">膳食状态标签</option>
+                                                    </select></th>
+                                                <th>二级标签</th>
+                                                <th>
+                                                    <select class="form-control" id="selectNext">
+                                                        <option>无</option>
+                                                        <option>兴趣</option>
+                                                        <option>年龄</option>
+                                                        <option>收入</option>
+                                                        <option>疾病</option>
+                                                        <option>地域</option>
+                                                        <option>忌口</option>
+                                                    </select></th>
+                                            </tr>
+                                            <tr>
+                                                <th>注册用户:<input type="checkbox" name="my-checkbox" value="1" id="is_login" checked></th>
+                                                <th>过滤数据:<input type="checkbox" name="my-checkbox" value="1" id="is_flag"></th>
+                                                <th>开始日期</th>
+                                                <th>
+                                                    <div class="input-group date form_date" data-date=""
+                                                         data-date-format="yyyy-MM-dd" data-link-field="dtp_input2"
+                                                         data-link-format="yyyy-mm-dd">
+                                                        <input class="form-control" id="begin_date" size="3"
+                                                               value="2000-01-01">
+                                                        <span class="input-group-addon"><span
+                                                                class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </th>
+                                                <th>结束日期</th>
+                                                <th>
+                                                    <div class="input-group date form_date" data-date=""
+                                                         data-date-format="yyyy-MM-dd" data-link-field="dtp_input2"
+                                                         data-link-format="yyyy-mm-dd">
+                                                        <input class="form-control" id="end_date" size="3" value="">
+                                                        <span class="input-group-addon"><span
+                                                                class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <button class="btn btn-primary" id="queryClick">查询</button>
+                                                </th>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End  Kitchen Sink -->
+                        </div>
+                    </div>
+                    <!-- /. ROW  -->
+                    <div class="type_tag" id="type_tag">
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10 text-center">
+                                <h3><span class="myTitle text-primary">全部</span><span
+                                        class="nextTitle text-success"></span>标签分类占比
+                                    <button class="btn btn-success btn-xs" title="导出Excel" onclick="toexcel()"><i
+                                            class="icon-download-alt">下载</i></button>
+                                </h3>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">1.性别分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="sexTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">2.年代分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="generationTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">3.收入分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="incomeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">4.职业分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="professionTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">5.忌口分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="taboosTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">6.兴趣分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="tagsTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">7.慢性病分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="chronTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">8.膳食状态标签占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="statesTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading text-danger">
+                                        <span class="label label-success">9.省份分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="provinceTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <!--    Hover Rows  -->
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <span class="label label-success">10.城市分布占比</span>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="cityTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>标签名称</th>
+                                                    <th>数量</th>
+                                                    <th>占比</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td>Mark</td>
+                                                    <td>Otto</td>
+                                                    <td>@mdo</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td>Jacob</td>
+                                                    <td>Thornton</td>
+                                                    <td>@fat</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td>Larry</td>
+                                                    <td>the Bird</td>
+                                                    <td>@twitter</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End  Hover Rows  -->
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <!-- /. ROW  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+
+<!-- 二级标签查询进度条模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                </button>
+                <h4 class="modal-title" id="myModalLabel">消息提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>正在查询数据，请耐心等待。。。。。</p>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<script th:src="@{/bootstrap/js/bootstrap-datetimepicker.min.js}"
+        src="/static/bootstrap/js/bootstrap-datetimepicker.min.js" charset="UTF-8"></script>
+<script th:src="@{/bootstrap/js/bootstrap-datetimepicker.zh-CN.js}"
+        src="/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript">
+
+
+    //日期插件使用
+    $('.form_date').datetimepicker({
+        language: 'zh-CN',
+        weekStart: 1,
+        todayBtn: 1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0
+    });
+
+    window.onload = function () {
+        $("#end_date").attr("value", getNowFormatDate);
+    };
+
+    /**
+     * 填充结束日期
+     */
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = year + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+
+    /**
+     * 获取请求源数据
+     */
+    function getDate() {
+
+        var type = $("#mySelect").val();
+        var flag = 0;
+
+        var nextSelect;
+        $.get("/queryProfile/" + type + "", {
+            flag: flag
+        }, function (msg) {
+            var jsonObject = msg.data.data;
+            $(".myTitle").html(msg.title);
+            $.each(jsonObject, function (i, item) {
+                nextSelect += "<option>" + item.name + "</option>"
+            });
+            $("#selectNext").html(nextSelect);
+        });
+
+
+    }
+
+    getCrowdDate();
+    /**
+     * 获取人群标签
+     */
+    function getCrowdDate() {
+        var type = "crowd.name";
+        $.get("/queryProfile/" + type + "", {
+            flag: 0
+        }, function (msg) {
+            $("#crowd").html(showCrowd(msg.data));
+        });
+    }
+
+    /**
+     * 选择下拉框触发事件
+     */
+    $("#mySelect").change(function () {
+        var parentType = $("#mySelect").val();
+        if (parentType === 'all') {
+            var nextSelect = "<option>无</option>";
+            $("#selectNext").html(nextSelect);
+        } else {
+            getDate();
+        }
+    });
+
+
+    getNextDate();
+
+    $("#queryClick").click(function () {
+        getNextDate();
+    });
+
+
+
+    function getNextDate() {
+        $('#myModal').modal('show');
+        var parentType = $("#mySelect").val();
+        var type = $("#selectNext").val();
+        var begin_date = $("#begin_date").val();
+        var end_date = $("#end_date").val();
+        var crowd = $("#crowd").val();
+        var isLogin = 0;
+        var flag = 0;
+        if ($("#is_login").is(":checked")) {//选中
+            isLogin = 1;
+        }
+        if ($("#is_flag").is(":checked")) {//选中
+            flag = 1;
+        }
+        $.get("/queryNextProfile/" + crowd + "/" + parentType + "", {
+            beginDate: begin_date,
+            endDate: end_date,
+            isLogin: isLogin,
+            type: type,
+            flag: flag
+        }, function (msg) {
+            $(".nextTitle").html(msg.nextTitle);
+
+            var sexHtml = showSelectNext(msg.sex);
+            $("#sexTable tr:not(:first)").empty();
+            $("#sexTable").append(sexHtml);
+
+            var generationHtml = showSelectNext(msg.generation);
+            $("#generationTable tr:not(:first)").empty();
+            $("#generationTable").append(generationHtml);
+
+            var professionHtml = showSelectNext(msg.profession);
+            $("#professionTable tr:not(:first)").empty();
+            $("#professionTable").append(professionHtml);
+
+            var incomeHtml = showSelectNext(msg.income);
+            $("#incomeTable tr:not(:first)").empty();
+            $("#incomeTable").append(incomeHtml);
+
+            var taboosHtml = showSelectNext(msg.taboos);
+            $("#taboosTable tr:not(:first)").empty();
+            $("#taboosTable").append(taboosHtml);
+
+            var tagsHtml = showSelectNext(msg.tags);
+            $("#tagsTable tr:not(:first)").empty();
+            $("#tagsTable").append(tagsHtml);
+
+            var chronHtml = showSelectNext(msg.chron);
+            $("#chronTable tr:not(:first)").empty();
+            $("#chronTable").append(chronHtml);
+
+            var statesHtml = showSelectNext(msg.states);
+            $("#statesTable tr:not(:first)").empty();
+            $("#statesTable").append(statesHtml);
+
+            var provinceHtml = showSelectNext(msg.province);
+            $("#provinceTable tr:not(:first)").empty();
+            $("#provinceTable").append(provinceHtml);
+
+            var cityHtml = showSelectNext(msg.city);
+            $("#cityTable tr:not(:first)").empty();
+            $("#cityTable").append(cityHtml);
+            $('#myModal').modal('hide');
+        });
+
+    }
+
+    /**
+     * 渲染表格内容数据
+     * @param data
+     * @returns {*}
+     */
+    function showSelectNext(data) {
+        var html;
+        var jsonObject = data.data;
+        var total = data.total;
+        $.each(jsonObject, function (i, item) {
+            i = i + 1;
+            html += "<tr>" +
+                "<td>" + i + "</td>" +
+                "<td>" + item.name + "</td>" +
+                "<td>" + item.value + "</td>" +
+                "<td>" + (item.value * 100 / total).toFixed(2) + "%</td>" +
+                "<tr>";
+        });
+        return html;
+    }
+
+    /**
+     * 人群标签
+     */
+    function showCrowd(data) {
+        var html='<option value="all" checked="checked">全部</option>';
+        var jsonObject = data.data;
+        $.each(jsonObject, function (i, item) {
+            html += '<option value="'+item.name+'">'+item.name+'</option>';
+        });
+        return html;
+    }
+
+    /**
+     * 表格数据下载excel
+     */
+    function toexcel() {
+        var crowd = $("#crowd").val();
+        var parentType = $("#mySelect").val();
+        var type = $("#selectNext").val();
+        var begin_date = $("#begin_date").val();
+        var end_date = $("#end_date").val();
+        var isLogin = 0;
+        var flag = 0;
+        if ($("#is_login").is(":checked")) {//选中
+            isLogin = 1;
+        }
+        if ($("#is_flag").is(":checked")) {//选中
+            flag = 1;
+        }
+        window.location.href = "/exportExcel/" + crowd + "/" + parentType + "/" + type + "? beginDate=" + begin_date + "&endDate=" + end_date + "&isLogin=" + isLogin + "&flag=" + flag + "";
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+    <!--alert提示消息-->
+    <link th:href="@{/bootstrap/css/xcConfirm.css}" href="/static/bootstrap/css/xcConfirm.css" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                        <h4 class="modal-title">食材标签矫正</h4>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ol class="breadcrumb">
+                                <li class="active">食材标签调整</li>
+                                <li><a th:href="@{/es/toPage/(param1=鱼香肉丝)}" href="../search/es_search.html">菜谱搜索</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                    <table class="table table-striped border-top" id="sample_1">
+                        <!--头部显示所包含的内容-->
+                        <thead>
+                        <tr>
+                            <th>
+                                <button class="btn btn-primary btn-sm" data-toggle="modal"
+                                        data-target="#add_myModal">
+                                    <i class="icon-plus">添加数据</i>
+                                </button>
+                            </th>
+                            <th>关键词</th>
+                            <th>类型</th>
+                            <th>排除词</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <!--头部显示所包含的内容 结束-->
+                        <tbody id="tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+
+<!-- 添加模态框（Modal） -->
+<div class="modal fade" id="add_myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">添加操作</h4>
+            </div>
+            <!-- page start 添加的主要部分-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <form id="add_from" class="form-horizontal tasi-form">
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">关键词</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" name="key" class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">类型</label>
+                                    <div class="col-lg-8">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" id="optionsRadiosInline1"
+                                                   value="keyword">关键词
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" id="optionsRadiosInline2"
+                                                   value="categories" checked="checked">标签
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" id="optionsRadiosInline3"
+                                                   value="ingredients">食材
+                                        </label>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">排除词</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="多个词,分割"  name="exclude_key"  class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-lg-3">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6">
+                                        <button id="add_button" class="btn btn-primary" type="button">添加</button>
+                                        <h4 id="add_message" class="help-block text-danger text-center"></h4>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- page end 添加的主要部分 结束-->
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div><!--添加srctype modal完-->
+
+<!-- 更新模态框（Modal） -->
+<div class="modal fade" id="update_myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">更新食材标签操作</h4>
+            </div>
+            <!-- page start 添加的主要部分-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <form id="update_from" class="form-horizontal tasi-form">
+                                <input name="id" id="id" hidden>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">关键词</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder=""  id="key"  name="key" class="form-control" readonly
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">类型</label>
+                                    <div class="col-lg-8">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" id="keyword"
+                                                   value="keyword">关键词
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type"  id="categories"
+                                                   value="categories">标签
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type"  id="ingredients"
+                                                   value="ingredients">食材
+                                        </label>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">排除词</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="多个词,分割" id="exclude_key" name="exclude_key"  class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-lg-3">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6">
+                                        <button id="update_button" class="btn btn-primary" type="button">更新</button>
+                                        <h4 id="message" class="help-block text-danger text-center"></h4>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- page end 添加的主要部分 结束-->
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div><!--添加srctype modal完-->
+
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<!--script for 提示框-->
+<script th:src="@{/bootstrap/js/xcConfirm.js}" src="/static/bootstrap/js/xcConfirm.js"></script>
+<script th:src="@{/bootstrap/js/jquery.dataTables.min.js}" src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+<script th:src="@{/bootstrap/js/DT_bootstrap.js}" src="/static/bootstrap/js/DT_bootstrap.js"></script>
+<script th:src="@{/bootstrap/js/jquery.form.js}" src="/static/bootstrap/js/jquery.form.js"></script>
+<script>
+
+
+
+    /**
+     * 添加操作
+     *
+     */
+    $('#add_button').click(function () {
+        $("#add_from").ajaxSubmit({
+            url: "/es/addAdjustWord",
+            type: "post",
+            dataType: 'json',
+            success: function (data) {
+                window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.info, {
+                    onOk: function () {
+                        location.reload();
+                    }
+                });
+            },
+            error: function (data) {
+                //发送失败
+                if (status === "timeout") {
+                    $("#message").text("发送超时请重发");
+                }
+            }
+        });
+    });
+
+    /**
+     * 更新触发模态框
+     * @param obj
+     */
+    function editInfo(obj) {
+
+        var total = $("#tbody").find("tr").length;
+        var table = document.getElementById("tbody");
+        var id;
+        if (total > 1) {
+            for (var index = 0; index < total; index++) {
+                var target = table.rows[index].cells[0].innerHTML;
+                if (target == obj) {
+                    id = index;
+                    break;
+                }
+            }
+        }
+
+        var key = table.rows[id].cells[1].innerHTML;
+        var type = table.rows[id].cells[2].innerHTML;
+        var exclude_key = table.rows[id].cells[3].innerHTML;
+
+
+        //向模态框中传值
+        $("#id").val(obj);
+        $('#key').val(key);
+        $('#exclude_key').val(exclude_key);
+
+        if (type==="keyword"){
+            $("#keyword").attr("checked","checked")
+        }else if(type==="ingredients"){
+            $("#ingredients").attr("checked","checked")
+        }else {
+            $("#categories").attr("checked","checked")
+        }
+
+        $('#update_myModal').modal('show');
+    }
+
+
+    /**
+     * 更新操作
+     *
+     */
+    $('#update_button').click(function () {
+        $("#update_from").ajaxSubmit({
+            url : "/es/updateAdjustWord",
+            type : "post",
+            dataType : 'json',
+            success : function(data) {
+                window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.info, {
+                    onOk: function () {
+                        location.reload();
+                    }
+                });
+            },
+            error : function(data) {
+                //发送失败
+                if (status === "timeout") {
+                    $("#message").text("发送超时请重发");
+                }
+            }
+        });
+    });
+
+    /**
+     * 删除操作
+     *
+     */
+    function delete_data(obj) {
+        var txt = "您确定要删除该条数据？";
+        window.wxc.xcConfirm(txt, window.wxc.xcConfirm.typeEnum.confirm, {
+            onOk: function () {
+                $.get("/es/deleteAdjustWord", {id: obj}, function (data) {
+                    $('#sample_1').DataTable().ajax.reload();
+                });
+            }
+        });
+    }
+
+    getChronTag();
+    /**
+     * table 渲染数据
+     */
+    function getChronTag() {
+        // begin first table
+        $('#sample_1').dataTable(
+            {
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "bootstrap",
+                "oLanguage": {
+                    "sLengthMenu": "每页 _MENU_ 项",
+                    "sSearch": "搜索:",
+                    "sInfo": "当前显示第 _START_ 至 _END_ 项，共 _TOTAL_ 项。",
+                    "sInfoEmpty": "当前显示第 0 至 0 项，共 0 项",
+                    "sEmptyTable": "表中数据为空",
+                    "sZeroRecords": "没有匹配结果",
+                    "sProcessing": "处理中...",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sLoadingRecords": "载入中...",
+                    "oPaginate": {
+                        "sPrevious": "上一页",
+                        "sNext": "下一页"
+                    }
+                },
+                "iDisplayLength": 50,//每页的行数，每页默认数量:10
+                "aLengthMenu": [50, 100, 200, "全部"],
+                "bAutoWidth": false, //自适应宽度
+                "bFilter": true,//是否显示搜索框
+                "bProcessing": false,                   // 是否显示取数据时的那个等待提示
+                "bServerSide": true,                    //这个用来指明是通过服务端来取数据
+                "sAjaxSource": "/es/searchAdjustData",      //这个是请求的地址
+                "fnServerData": retrieveData,            // 获取数据的处理函数
+                "bSort": true, //是否支持排序功能
+
+
+                //配置列要显示的数据
+                "columns": [
+                    {"data": "id"},
+                    {"data": "key"},
+                    {"data": "type"},
+                    {"data": "exclude_key"},
+                    {"data": null}
+                ],
+
+                "columnDefs": [
+                    {
+                        "bSortable": false,
+                        targets: -1,
+                        defaultContent: "",
+                        mRender : function(data, type, row, meta) {
+                            var html = '  <button class="btn btn-primary btn-xs"  onclick="editInfo('+row.id+')" ' +
+                                'data-toggle="modal" data-target="#update_myModal"> <i class="icon-pencil">更改</i></button>&nbsp;&nbsp;&nbsp;&nbsp;' +
+                                '<button class="btn btn-danger btn-xs"  onclick="delete_data('+row.id+')"' +
+                                '<i class="icon-trash ">删除</i></button> ';
+                            return html;
+                        }
+                    }
+                ],
+
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            });
+
+        // 3个参数的名字可以随便命名,但必须是3个参数,少一个都不行
+        function retrieveData(sSource, aoData, fnCallback) {
+            $.ajax({
+                url: sSource,                              //这个就是请求地址对应sAjaxSource
+                data: {"aoData": JSON.stringify(aoData)},   //这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数 ,分页,排序,查询等的值
+                type: 'get',
+                dataType: 'json',
+                async: false,
+                success: function (result) {
+                    fnCallback(result);                     //把返回的数据传给这个方法就可以了,datatable会自动绑定数据的
+                },
+                error: function (msg) {
+                }
+            });
+        }
+
+        jQuery('#sample_1 .group-checkable').change(function () {
+            var set = jQuery(this).attr("data-set");
+            var checked = jQuery(this).is(":checked");
+            jQuery(set).each(function () {
+                if (checked) {
+                    $(this).attr("checked", true);
+                } else {
+                    $(this).attr("checked", false);
+                }
+            });
+            jQuery.uniform.update(set);
+        });
+
+        jQuery('#sample_1_wrapper .dataTables_filter input').addClass("form-control"); // modify table search input
+        jQuery('#sample_1_wrapper .dataTables_length select').addClass("form-control"); // modify table per page dropdown
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+    <link th:href="@{/bootstrap/css/extra.css}" rel="stylesheet" href="../../static/bootstrap/css/extra.css"/>
+    <link th:href="@{/bootstrap/css/animate.css}" rel="stylesheet" href="../../static/bootstrap/css/animate.css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrapStyle.css}"
+          href="/static/bootstrap/css/bootstrapStyle.css" type="text/css">
+
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">
+                            菜单管理
+                        </h4>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                </div>
+                <div>
+                    <ul id="treeDemo" class="ztree"></ul>
+                </div>
+                <input hidden id="checked_node">
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+<!-- 添加模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">新增节点</h4>
+            </div>
+            <!-- page start 添加的主要部分-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <form id="add_from" class="form-horizontal tasi-form">
+                                <input placeholder="" id="pId" name="pId" type="hidden">
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">节点名称</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" id="name" name="name" class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">类型</label>
+                                    <div class="col-lg-8">
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" value="1" checked="">菜单
+                                        </label>
+                                        <label class="radio-inline">
+                                            <input type="radio" name="type" value="0">链接
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">是否可见</label>
+                                    <div class="col-lg-8">
+                                        <label>
+                                            <input type="checkbox" value="1" id="visiable" name="visiable">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">url</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" id="url" name="url" class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">图标</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" id="icon" name="icon"
+                                               class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-lg-3">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6">
+                                        <button id="add_button" class="btn btn-primary" type="button">添加</button>
+                                        <h4 id="add_message" class="help-block text-danger text-center"></h4>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- page end 添加的主要部分 结束-->
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<script th:src="@{/bootstrap/js/ztree/jquery.ztree.core.js}"
+        src="/static/bootstrap/js/ztree/jquery.ztree.core.js"></script>
+<script th:src="@{/bootstrap/js/ztree/jquery.ztree.excheck.js}"
+        src="/static/bootstrap/js/ztree/jquery.ztree.excheck.js"></script>
+<script th:src="@{/bootstrap/js/ztree/jquery.ztree.exedit.js}"
+        src="/static/bootstrap/js/ztree/jquery.ztree.exedit.js"></script>
+<script th:src="@{/bootstrap/js/jquery.form.js}" src="/static/bootstrap/js/jquery.form.js"></script>
+
+<script type="text/javascript">
+
+    var setting = {
+        view: {
+            addHoverDom: addHoverDom,
+            removeHoverDom: removeHoverDom,
+            chkStyle: "checkbox",//复选框类型
+            selectedMulti: false
+        },
+        check: {
+            enable: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        edit: {
+            enable: true,
+            drag: {
+                isCopy: false,
+                isMove: true,
+                prev: true,
+                next: false,
+                inner: false
+            }
+        },
+        callback: {
+            beforeCheck: true,
+            onRemove: onRemove,
+            beforeRename: beforeRename,
+            beforeDrag: zTreeBeforeDrag,//拖拽验证
+            onDrop: onDrop
+        }
+
+    };
+
+    /*    var zNodes =[
+            {id:1, pId:0, name:"[core] 基本功能 演示", open:true,sortId:1},
+            {id:101, pId:1, name:"最简单的树 --  标准 JSON 数据",sortId:0},
+            {id:102, pId:1, name:"最简单的树 --  简单 JSON 数据",sortId:0},
+            {id:103, pId:1, name:"不显示 连接线",sortId:1},
+            {id:104, pId:1, name:"不显示 节点 图标",sortId:1},
+            {id:108, pId:1, name:"异步加载 节点数据",sortId:0},
+            {id:109, pId:1, name:"用 zTree 方法 异步加载 节点数据",sortId:1},
+            {id:110, pId:1, name:"用 zTree 方法 更新 节点数据",sortId:1},
+            {id:111, pId:1, name:"单击 节点 控制",sortId:1},
+            {id:112, pId:1, name:"展开 / 折叠 父节点 控制",sortId:0},
+            {id:113, pId:1, name:"根据 参数 查找 节点",sortId:1},
+            {id:114, pId:1, name:"其他 鼠标 事件监听",sortId:0},
+
+            {id:2, pId:0, name:"[excheck] 复/单选框功能 演示", open:false,sortId:1},
+            {id:201, pId:2, name:"Checkbox 勾选操作",sortId:1},
+            {id:206, pId:2, name:"Checkbox nocheck 演示",sortId:1},
+            {id:207, pId:2, name:"Checkbox chkDisabled 演示",sortId:1},
+            {id:208, pId:2, name:"Checkbox halfCheck 演示",sortId:1},
+            {id:202, pId:2, name:"Checkbox 勾选统计",sortId:1},
+            {id:203, pId:2, name:"用 zTree 方法 勾选 Checkbox",sortId:1},
+            {id:204, pId:2, name:"Radio 勾选操作",sortId:1},
+            {id:209, pId:2, name:"Radio nocheck 演示",sortId:1},
+            {id:210, pId:2, name:"Radio chkDisabled 演示",sortId:1},
+            {id:211, pId:2, name:"Radio halfCheck 演示",sortId:1},
+            {id:205, pId:2, name:"用 zTree 方法 勾选 Radio",sortId:1},
+
+            {id:3, pId:0, name:"[exedit] 编辑功能 演示", open:false,sortId:1},
+            {id:301, pId:3, name:"拖拽 节点 基本控制",sortId:1},
+            {id:302, pId:3, name:"拖拽 节点 高级控制",sortId:1},
+            {id:303, pId:3, name:"用 zTree 方法 移动 / 复制 节点",sortId:1},
+            {id:304, pId:3, name:"基本 增 / 删 / 改 节点",sortId:1},
+            {id:305, pId:3, name:"高级 增 / 删 / 改 节点",sortId:1},
+            {id:306, pId:3, name:"用 zTree 方法 增 / 删 / 改 节点",sortId:1},
+            {id:307, pId:3, name:"异步加载 & 编辑功能 共存",sortId:1},
+            {id:308, pId:3, name:"多棵树之间 的 数据交互",sortId:1},
+
+            {id:4, pId:0, name:"大数据量 演示", open:false,sortId:1},
+            {id:401, pId:4, name:"一次性加载大数据量",sortId:1},
+            {id:402, pId:4, name:"分批异步加载大数据量",sortId:1},
+            {id:403, pId:4, name:"分批异步加载大数据量",sortId:1},
+
+            {id:5, pId:0, name:"组合功能 演示", open:false,sortId:1},
+            {id:501, pId:5, name:"冻结根节点",sortId:1},
+            {id:502, pId:5, name:"单击展开/折叠节点",sortId:1},
+            {id:503, pId:5, name:"保持展开单一路径",sortId:1},
+            {id:504, pId:5, name:"添加 自定义控件",sortId:1},
+            {id:505, pId:5, name:"checkbox / radio 共存",sortId:1},
+            {id:506, pId:5, name:"左侧菜单",sortId:1},
+            {id:507, pId:5, name:"下拉菜单",sortId:1},
+            {id:509, pId:5, name:"带 checkbox 的多选下拉菜单",sortId:1},
+            {id:510, pId:5, name:"带 radio 的单选下拉菜单",sortId:1},
+            {id:508, pId:5, name:"右键菜单 的 实现",sortId:1},
+            {id:511, pId:5, name:"与其他 DOM 拖拽互动",sortId:1},
+            {id:512, pId:5, name:"异步加载模式下全部展开",sortId:1},
+
+            {id:6, pId:0, name:"其他扩展功能 演示", open:false,sortId:1},
+            {id:601, pId:6, name:"隐藏普通节点",sortId:1},
+            {id:602, pId:6, name:"配合 checkbox 的隐藏",sortId:1},
+            {id:603, pId:6, name:"配合 radio 的隐藏",sortId:1}
+        ];*/
+
+    $(document).ready(function () {
+        $.get("/menu/queryMenuTree", function (data) {
+            $.fn.zTree.init($("#treeDemo"), setting, $.parseJSON(data));
+        });
+    });
+
+    //var newCount = 1;
+    function addHoverDom(treeId, treeNode) {
+        var sObj = $("#" + treeNode.tId + "_span");
+        if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+        var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+            + "' title='add node' onfocus='this.blur();'></span>";
+        sObj.after(addStr);
+        var btn = $("#addBtn_" + treeNode.tId);
+        if (btn) btn.bind("click", function () {
+            $('#myModal').modal('show');
+            $("#pId").attr("value", treeNode.id);
+        });
+    }
+
+    function removeHoverDom(treeId, treeNode) {
+        $("#addBtn_" + treeNode.tId).unbind().remove();
+    }
+
+    //删除
+    function onRemove(event, treeId, treeNode) {
+        $.get("/menu/deleteMenuNode", {id: treeNode.id}, function (data) {
+            toastr.success(data.message);
+        });
+    }
+
+    function beforeRename(treeId, treeNode, newName, isCancel) {
+        if (newName.length == 0) {
+            setTimeout(function () {
+                var zTree = $.fn.zTree.getZTreeObj(treeId);
+                zTree.cancelEditName();
+                toastr.warning('节点名称不能为空');
+            }, 0);
+            return false;
+        } else if (newName == treeNode.name) {
+            return true;
+        } else {
+            $.get("/menu/renameMenuNode", {id: treeNode.id, newName: newName}, function (data) {
+                toastr.success(data.message);
+                return true;
+            });
+        }
+    }
+
+
+    //拖拽之前的事件回调函数,判断是否允许拖拽
+    function zTreeBeforeDrag(treeId, treeNodes) {
+        for (var i = 0, l = treeNodes.length; i < l; i++) {
+            if (treeNodes[i].drag === false) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    function onDrop(event, treeId, treeNodes, targetNode, moveType, isCopy) {
+        if (moveType == 'prev') {
+            if (targetNode.pId == -1) {
+                return false;
+            }
+            var updateNode = getPeerNodes(targetNode);
+            var updateSort = "";
+            for (var i = 0; i < updateNode.length; i++) {
+                updateSort += updateNode[i].id + ',';
+            }
+            updateSort=updateSort.substring(0, updateSort.lastIndexOf(','));
+            $.get("/menu/updatePrevLocation", {ids: updateSort,id: treeNodes[0].id, pid: targetNode.pId}, function (data) {
+                toastr.success(data.message);
+            });
+        }
+        return true;
+    }
+
+
+    function getPeerNodes(targetNode) {
+        if (targetNode == null) {
+            return null;
+        } else {
+            if (targetNode.getParentNode() != null) {
+                return targetNode.getParentNode().children;
+            }
+            return null;
+        }
+    }
+
+
+    $('#add_button').click(function () {
+        $("#add_from").ajaxSubmit({
+            url: "/menu/addMenuNode",
+            type: "post",
+            dataType: 'json',
+            success: function (data) {
+                window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.info, {
+                    onOk: function () {
+                        location.reload();
+                    }
+                });
+            },
+            error: function (data) {
+                //发送失败
+                if (status == "timeout") {
+                    $("#message").text("发送超时请重发");
+                }
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>
+
+
+
+
+

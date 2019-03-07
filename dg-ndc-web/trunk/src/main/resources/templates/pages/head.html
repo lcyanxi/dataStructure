@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<body>
+<div th:fragment="head">
+    <section id="container" class="">
+        <!--header start 头部导航栏-->
+        <header class="header white-bg">
+            <!--左侧标题-->
+            <div class="sidebar-toggle-box">
+                <div data-original-title="导航栏" data-placement="right" class="icon-reorder tooltips"></div>
+            </div>
+            <!--logo start-->
+            <a href="#" class="logo">豆果DC后台<span>管理系统</span></a>
+            <!--logo end-->
+
+            <!--首页通知和模板下载-->
+            <!--通知下载结束-->
+
+            <!--右侧部分-->
+            <div class="top-nav ">
+                <!--search & user info start 右部搜索-->
+                <ul class="nav pull-right top-menu">
+                    <!-- user login dropdown start 个人信息等(在头像按钮下)-->
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                              <img alt="" th:src="@{/bootstrap/img/avatar.jpg}"  width="35" height="35" src="/static/bootstrap/img/avatar.jpg"/>
+                              <span class="username" th:text="${session.user.username}">lichang</span>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu extended logout">
+                            <div class="log-arrow-up"></div>
+                            <li><a  href="#"><i class="icon-user"></i>个人资料</a>
+                            </li>
+                            <li><a  href="#"><i class="icon-warning-sign"></i>安全中心</a>
+                            </li>
+                            <li><a  href="#"><i class="icon-bell-alt"></i>消息通知</a></li>
+                            <li><a th:href="@{/logout}" href="#"><i class="icon-signout"></i>退出登录</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- user login dropdown end -->
+                </ul>
+                <!--search & user info end-->
+            </div>
+            <!--右侧部分结束-->
+        </header>
+        <!--header end 头部导航栏结束-->
+
+        <!--sidebar start 左侧导航栏-->
+        <aside>
+            <div id="sidebar" class="pre-scrollable">
+                <!-- sidebar menu start-->
+              <!--  <ul class="sidebar-menu">
+                    <li>
+                        <a class="" th:href="@{/index/home}" href="index.html">
+                            <i class="icon-home"></i>
+                            <span>首页</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu" shiro:hasPermission="/index/permission">
+                        <a href="/templates/pages/tree.html" th:href="@{/index/permission}">
+                            <i class="icon-user"></i>
+                            <span>权限管理</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu" shiro:hasPermission="/chron/toPage">
+                        <a href="cook_tag.html" class="" th:href="@{/chron/toPage}">
+                            <i class="icon-edit-sign"></i>
+                            <span>菜谱标签管理</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu" shiro:hasPermission="/chron/toTagInfoPage">
+                        <a href="tag_info.html" class="" th:href="@{/chron/toTagInfoPage}">
+                            <i class="icon-edit-sign"></i>
+                            <span>标签信息管理</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu" shiro:hasPermission="/chron/toFoodTagPage">
+                        <a href="food_tag.html" class="" th:href="@{/chron/toFoodTagPage}">
+                            <i class="icon-edit-sign"></i>
+                            <span>食材标签管理</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu" shiro:hasPermission="/chron/toNutrimentTagPage">
+                        <a href="nutriment_tag.html" class="" th:href="@{/chron/toNutrimentTagPage}">
+                            <i class="icon-edit-sign"></i>
+                            <span>营养素标签管理</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu" shiro:hasPermission="/index/userProfile">
+                        <a href="/templates/pages/user_profile.html" class="" th:href="@{/index/userProfile}">
+                            <i class="icon-bar-chart"></i>
+                            <span>用户画像</span>
+                        </a>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-bar-chart"></i>
+                            <span>用户行为统计</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li shiro:hasAnyRoles="决策员,管理员"><a class="" th:href="@{/bill/monthcount}"
+                                                               href="monthcount.html">月度统计</a></li>
+                            <li shiro:hasAnyRoles="决策员,管理员"><a class="" th:href="@{/bill/yearcount}" href="yearcount.html">年度统计</a>
+                            </li>
+                            <li shiro:hasAnyRoles="决策员,管理员"><a class="" th:href="@{/bill/categorycount}"
+                                                               href="categorycount.html">分类统计</a></li>
+                            <li shiro:hasAnyRoles="决策员,管理员"><a class="" th:href="@{/bill/ratecount}" href="ratecount.html">比率统计</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-code-fork"></i>
+                            <span>豆果自助超市</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li shiro:hasAnyRoles="决策员,管理员"><a class="" th:href="@{/ai/linear}"
+                                                               href="ai/linear.html">线性预测</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-user-md"></i>
+                            <span>电商统计</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li shiro:hasAnyRoles="决策员,管理员"><a class="" th:href="@{/staffs/showstaff}" href="#">查看员工</a>
+                            </li>
+                            <li shiro:hasAnyRoles="管理员"><a class="" th:href="@{/staffs/managestaff}"
+                                                           href="staffs/managestaff.html">员工管理</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-male"></i>
+                            <span>APP渠道统计</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li><a class="" th:href="@{/staff/profile}" href="staff/profile.html">个人资料</a></li>
+                            <li><a class="" th:href="@{/staff/editprofile}" href="staff/editprofile.html">修改信息</a></li>
+                            <li><a class="" th:href="@{/staff/security}" href="staff/security.html">安全中心</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-envelope"></i>
+                            <span>网站统计</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li><a class="" th:href="@{/staff/message}" href="inform.html">我的消息</a></li>
+                            <li><a class="" th:href="@{/staff/sendmessage}" href="sendmsg.html">发送消息</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-shield"></i>
+                            <span>APP统计</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li shiro:hasAnyRoles="管理员"><a th:href="@{/log/systemlog}" href="systemlog.html">系统日志</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-info"></i>
+                            <span>菜谱统计</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li><a th:href="@{/aboutus}" href="aboutus.html">关于我们</a></li>
+                            <li><a th:href="@{/aboutsystem}" href="aboutsystem.html">关于系统</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-info"></i>
+                            <span>作品统计</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li><a th:href="@{/aboutus}" href="aboutus.html">关于我们</a></li>
+                            <li><a th:href="@{/aboutsystem}" href="aboutsystem.html">关于系统</a></li>
+                        </ul>
+                    </li>
+                    <li class="sub-menu">
+                        <a href="javascript:;" class="">
+                            <i class="icon-info"></i>
+                            <span>地区分布</span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub">
+                            <li><a th:href="@{/aboutus}" href="aboutus.html">关于我们</a></li>
+                            <li><a th:href="@{/aboutsystem}" href="aboutsystem.html">关于系统</a></li>
+                        </ul>
+                    </li>
+                </ul>-->
+                <!-- sidebar menu end-->
+            </div>
+        </aside>
+        <!--sidebar end 左侧导航栏结束-->
+    </section>
+</div>
+
+</body>
+</html>

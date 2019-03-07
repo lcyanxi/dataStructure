@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/fileinput.min.css}" href="/static/bootstrap/css/fileinput.min.css">
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                        <h4 class="modal-title">腾讯标签接口管理</h4>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                    <table class="table table-striped border-top" id="sample_1">
+                        <!--头部显示所包含的内容-->
+                        <thead>
+                        <tr>
+                            <th>
+                                <button class="btn btn-primary btn-sm" data-toggle="modal"
+                                        title="添加新标签" data-target="#add_myModal">
+                                    <i class="icon-plus">新增</i>
+                                </button>
+                            </th>
+                            <th>名称</th>
+                            <th>标签ID</th>
+                            <th>父标签ID</th>
+                            <th>标签code</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <!--头部显示所包含的内容 结束-->
+                        <tbody id="tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+
+<!-- 添加模态框（Modal） -->
+<div class="modal fade" id="add_myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">新增标签信息</h4>
+            </div>
+            <!-- page start 添加的主要部分-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <form id="add_from" class="form-horizontal tasi-form">
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">标签名称</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" id="add_name" name="name" class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">标签code</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" id="tag_code" name="tag_code" class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <input hidden name="parentTagId" id="parentTagId">
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-lg-3">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6">
+                                        <button id="add_button" class="btn btn-primary" type="button">新增</button>
+                                        <h4 id="add_message" class="help-block text-danger text-center"></h4>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- page end 添加的主要部分 结束-->
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div><!--添加srctype modal完-->
+
+
+<!-- 添加模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">新增标签信息</h4>
+            </div>
+            <!-- page start 添加的主要部分-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <form id="file_from" class="form-horizontal tasi-form" method="post"  enctype="multipart/form-data">
+                                <div class="form-group has-success">
+                                    <input hidden id="tag_id" name="tag_id">
+                                    <input hidden id="account_id" name="account_id" value="9365385">
+                                    <div class="form-group has-success">
+                                        <label class="col-lg-4 control-label">user_id_type</label>
+                                        <div class="col-lg-8">
+                                            <select class="form-control" id="user_id_type" name="user_id_type">
+                                                <option value="IDFA" checked="checked">IDFA</option>
+                                                <option value="IMEI">IMEI</option>
+                                            </select>
+                                            <p class="help-block"></p>
+                                        </div>
+                                    </div>
+                                    <input type="file" name="file" id="file"/>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-lg-3">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6">
+                                        <button id="file_button" class="btn btn-primary" type="button">新增</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- page end 添加的主要部分 结束-->
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div><!--添加srctype modal完-->
+
+<!--<form>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">请选择要上传的文件</h4>
+                </div>
+                <div class="modal-body">
+
+                    <input hidden id="tag_id">
+                    <input type="file" name="file" id="file" multiple class="file-loading" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>-->
+
+
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<script th:src="@{/bootstrap/js/jquery.dataTables.min.js}" src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+<script th:src="@{/bootstrap/js/DT_bootstrap.js}" src="/static/bootstrap/js/DT_bootstrap.js"></script>
+<script th:src="@{/bootstrap/js/jquery.form.js}" src="/static/bootstrap/js/jquery.form.js"></script>
+<script th:src="@{/bootstrap/js/fileinput.min.js}" src="/static/bootstrap/js/fileinput.min.js"></script>
+
+<script>
+    getChronTag();
+    var access_token='83ea5be46336546e0ef828a6c4493d11';
+
+/*
+        initFileInput("file");
+
+        //初始化fileinput控件（第一次初始化）
+        function initFileInput(ctrlName) {
+
+            var control = $('#' + ctrlName);
+            control.fileinput({
+                language: 'zh', //设置语言
+                //上传的地址
+               // allowedFileExtensions : ['jpg', 'png','gif'],//接收的文件后缀
+                showUpload: false, //是否显示上传按钮
+                showCaption: false,//是否显示标题
+                //uploadUrl: "https://api.e.qq.com/v1.1/custom_tag_files/add?access_token=04ef1e1f67b4f2f037ee061e909f2df5&timestamp="+mytime+"&nonce="+mytime
+               uploadUrl:"/tencent/uploadFile",
+                browseClass: "btn btn-primary", //按钮样式
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                uploadExtraData: function(previewId, index) {   //额外参数 返回json数组
+                    var formdata = {};
+                    formdata = {
+                        "tagId":$("#tag_id").val(),
+                        "account_id":"9365385",
+                        "user_id_type":"IDFA"
+                    };
+
+                    return formdata
+                },
+            });
+        }*/
+
+    /**
+     * 更新触发模态框
+     * @param obj
+     */
+    function editInfo(obj) {
+        $("#tag_id").val(obj);
+        $('#myModal').modal('show');
+    }
+
+    function addChildTag(obj) {
+        $("#parentTagId").val(obj);
+        $('#add_myModal').modal('show');
+    }
+
+
+    function myDelete(obj) {
+        var message="你确定要删除"+obj+"标签吗";
+        window.wxc.xcConfirm(message, window.wxc.xcConfirm.typeEnum.info, {
+            onOk: function () {
+                $.get("/tencent/delete_tag", {id:obj}, function (msg) {
+                    var url="https://api.e.qq.com/v1.1/custom_tags/delete?access_token=" +access_token+
+                        "&timestamp="+Date.parse(new Date()) / 1000 +"&nonce=" + Date.parse(new Date()) / 1000+"&account_id=9365385&tag_id="+obj;
+                    window.location.href=url
+                });
+            }
+        });
+        
+    }
+    function checkedUpload(obj) {
+        var filter='[{"field":"tag_id","operator":"EQUALS","values":['+obj+']}]';
+        var url="https://api.e.qq.com/v1.1/custom_tag_files/get?access_token=" +access_token+
+            "&timestamp="+Date.parse(new Date()) / 1000 +"&nonce=" + Date.parse(new Date()) / 1000+"&account_id=9365385&filtering="+filter;
+        window.location.href=url;
+    }
+
+    $('#add_button').click(function () {
+        var name = $("#add_name").val();
+        var parentTagId=$("#parentTagId").val();
+        var tag_code=$("#tag_code").val();
+        $.get("/tencent/add_tag", {name: name,parentTagId:parentTagId,tagCode:tag_code}, function (msg) {
+            window.wxc.xcConfirm(msg.message, window.wxc.xcConfirm.typeEnum.info, {
+                onOk: function () {
+                    location.reload();
+                }
+            });
+        });
+    });
+
+    $('#file_button').click(function () {
+/*
+        $("#file_from").ajaxSubmit({
+            url : "https://api.e.qq.com/v1.1/custom_tag_files/add?access_token=04ef1e1f67b4f2f037ee061e909f2df5&timestamp=" +Date.parse(new Date()) / 1000+ "&nonce=" +Date.parse(new Date()) / 1000,
+            type : "post",
+            contentType: false,
+            processData:false,
+            success : function(data) {},
+            error : function(data) {
+                //发送失败
+                if (status == "timeout") {
+                    $("#message").text("发送超时请重发");
+                }
+            }
+        });
+*/
+
+        ff=document.getElementById("file_from");
+        f_action="https://api.e.qq.com/v1.1/custom_tag_files/add?access_token="+access_token+"&timestamp="+Date.parse(new Date()) / 1000 +"&nonce=" + Date.parse(new Date()) / 1000;
+        ff.action=f_action;
+        ff.submit();
+    });
+
+
+    /**
+     * table 渲染数据
+     */
+    function getChronTag() {
+        // begin first table
+        $('#sample_1').dataTable(
+            {
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "bootstrap",
+                "oLanguage": {
+                    "sLengthMenu": "每页 _MENU_ 项",
+                    "sSearch": "搜索:",
+                    "sInfo": "当前显示第 _START_ 至 _END_ 项，共 _TOTAL_ 项。",
+                    "sInfoEmpty": "当前显示第 0 至 0 项，共 0 项",
+                    "sEmptyTable": "表中数据为空",
+                    "sZeroRecords": "没有匹配结果",
+                    "sProcessing": "处理中...",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sLoadingRecords": "载入中...",
+                    "oPaginate": {
+                        "sPrevious": "上一页",
+                        "sNext": "下一页"
+                    }
+                },
+                "iDisplayLength": 50,//每页的行数，每页默认数量:10
+                "aLengthMenu": [50, 100, 200, "全部"],
+                "bAutoWidth": false, //自适应宽度
+                "bFilter": true,//是否显示搜索框
+                "bProcessing": true,                   // 是否显示取数据时的那个等待提示
+                "bServerSide": true,                    //这个用来指明是通过服务端来取数据
+                "sAjaxSource": "/tencent/queryData",      //这个是请求的地址
+                "fnServerData": retrieveData,            // 获取数据的处理函数
+                "bSort": true, //是否支持排序功能
+                //配置列要显示的数据
+                "columns": [
+                    {"data": "id"},
+                    {"data": "name"},
+                    {"data": "tagId"},
+                    {"data": "parentTagId"},
+                    {"data": "tagCode"},
+                    {"data": null}
+                ],
+                "columnDefs": [
+                    {
+                        "bSortable": false,
+                        targets: -1,
+                        defaultContent: "",
+                        mRender: function (data, type, row, meta) {
+                            var html = '<button class="btn btn-primary btn-xs"  onclick="editInfo('+ row.tagId + ')"><i class=" icon-upload-alt"></i></button>&nbsp&nbsp&nbsp' +
+                                '<button class="btn btn-primary btn-xs"  onclick="checkedUpload('+ row.tagId + ')"><i class=" icon-eye-open"></i>验证</button>&nbsp&nbsp&nbsp' +
+                                '<button class="btn btn-primary btn-xs"  onclick="myDelete('+ row.tagId + ')"><i class=" icon-trash"></i></button>';
+                            return html;
+                        }
+                    },
+                    {
+                        "bSortable": false,
+                        targets: 3,
+                        defaultContent: "",
+                        mRender: function (data, type, row, meta) {
+                            var html = row.parentTagId+'&nbsp&nbsp&nbsp<button class="btn btn-primary btn-xs"  onclick="addChildTag('+ row.tagId + ')"><i class="icon-plus">子标签</i></button>' ;
+                            return html;
+                        }
+                    }
+                ],
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            });
+
+        // 3个参数的名字可以随便命名,但必须是3个参数,少一个都不行
+        function retrieveData(sSource, aoData, fnCallback) {
+            $.ajax({
+                url: sSource,                              //这个就是请求地址对应sAjaxSource
+                data: {"aoData": JSON.stringify(aoData)},   //这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数 ,分页,排序,查询等的值
+                type: 'get',
+                dataType: 'json',
+                async: false,
+                success: function (result) {
+                    fnCallback(result);                     //把返回的数据传给这个方法就可以了,datatable会自动绑定数据的
+                },
+                error: function (msg) {
+                }
+            });
+        }
+
+        jQuery('#sample_1 .group-checkable').change(function () {
+            var set = jQuery(this).attr("data-set");
+            var checked = jQuery(this).is(":checked");
+            jQuery(set).each(function () {
+                if (checked) {
+                    $(this).attr("checked", true);
+                } else {
+                    $(this).attr("checked", false);
+                }
+            });
+            jQuery.uniform.update(set);
+        });
+
+        jQuery('#sample_1_wrapper .dataTables_filter input').addClass("form-control"); // modify table search input
+        jQuery('#sample_1_wrapper .dataTables_length select').addClass("form-control"); // modify table per page dropdown
+    }
+
+</script>
+</body>
+</html>

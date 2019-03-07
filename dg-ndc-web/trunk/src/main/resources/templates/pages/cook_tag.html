@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                        <h4 class="modal-title">菜谱标签管理</h4>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                    <table class="table table-striped border-top" id="sample_1">
+                        <!--头部显示所包含的内容-->
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>菜谱ID</th>
+                            <th>菜谱名称</th>
+                            <th>标签ID</th>
+                            <th>标签</th>
+                            <th>状态</th>
+                            <th>级别</th>
+                            <th>创建时间</th>
+                            <th>更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <!--头部显示所包含的内容 结束-->
+                        <tbody id="tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+
+<!-- 更新模态框（Modal） -->
+<div class="modal fade" id="update_myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">更新疾病标签</h4>
+            </div>
+            <!-- page start 添加的主要部分-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <div class="panel-body">
+                            <form  id="update_from" class="form-horizontal tasi-form">
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">状态</label>
+                                    <div class="col-lg-8">
+                                        <select class="form-control" id="status" name="status">
+                                            <option value="2">专家审核</option>
+                                            <option value="1">人工审核</option>
+                                            <option value="0">后续可以删除</option>
+                                            <option value="-1">删除</option>
+                                        </select>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group has-success">
+                                    <label class="col-lg-4 control-label">级别</label>
+                                    <div class="col-lg-8">
+                                        <input placeholder="" id="level" name="level"  class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group has-success">
+                                    <div class="col-lg-8">
+                                        <input type="hidden" placeholder="" id="id" name="id"  class="form-control"
+                                               autofocus>
+                                        <p class="help-block"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-6 col-lg-3">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-6 col-lg-6">
+                                        <button id="update_button" class="btn btn-primary" type="button">更新</button>
+                                        <h4 id="message" class="help-block text-danger text-center"></h4>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- page end 添加的主要部分 结束-->
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div><!--添加srctype modal完-->
+
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<script th:src="@{/bootstrap/js/jquery.dataTables.min.js}" src="/static/bootstrap/js/jquery.dataTables.min.js"></script>
+<script th:src="@{/bootstrap/js/DT_bootstrap.js}" src="/static/bootstrap/js/DT_bootstrap.js"></script>
+<script th:src="@{/bootstrap/js/jquery.form.js}" src="/static/bootstrap/js/jquery.form.js"></script>
+
+<script>
+
+
+    /**
+     * 更新触发模态框
+     * @param obj
+     */
+    function editInfo(obj) {
+
+        var total = $("#tbody").find("tr").length;
+        var table = document.getElementById("tbody");
+        var id;
+        //获取当前页面中所有在运行中的jobId
+        if (total > 1) {
+            for (var index = 0; index < total; index++) {
+                var target = table.rows[index].cells[0].innerHTML;
+                if (target == obj) {
+                    id = index;
+                    break;
+                }
+            }
+        }
+
+        var cookId = table.rows[id].cells[1].innerHTML;
+        var cookName = table.rows[id].cells[2].innerHTML;
+        var tagId = table.rows[id].cells[3].innerHTML;
+        var tag = table.rows[id].cells[4].innerHTML;
+        var status = table.rows[id].cells[5].innerHTML;
+        var level = table.rows[id].cells[6].innerHTML;
+
+        //向模态框中传值
+        $("#id").val(obj);
+        $('#cookId').val(cookId);
+        $('#cookName').val(cookName);
+        $('#tagId').val(tagId);
+        $('#tag').val(tag);
+
+        //遍历所有status option得值
+        $("#status option").each(function(){
+            if($(this).text()==status){
+                $(this).attr('selected','selected');
+            }
+        });
+
+        $('#level').val(level);
+
+        $('#update_myModal').modal('show');
+    }
+
+
+    /**
+     * 更新tag 操作
+     *
+     */
+    $('#update_button').click(function () {
+        $("#update_from").ajaxSubmit({
+            url : "/chron/updateChronTag",
+            type : "post",
+            dataType : 'json',
+            success : function(data) {
+                window.wxc.xcConfirm(data.message, window.wxc.xcConfirm.typeEnum.info, {
+                    onOk: function () {
+                        location.reload();
+                    }
+                });
+            },
+            error : function(data) {
+                //发送失败
+                if (status == "timeout") {
+                    $("#message").text("发送超时请重发");
+                }
+            }
+        });
+    });
+
+    getChronTag();
+
+    /**
+     * table 渲染数据
+     */
+    function getChronTag() {
+        // begin first table
+        $('#sample_1').dataTable(
+            {
+                "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
+                "sPaginationType": "bootstrap",
+                "oLanguage": {
+                    "sLengthMenu": "每页 _MENU_ 项",
+                    "sSearch": "搜索:",
+                    "sInfo": "当前显示第 _START_ 至 _END_ 项，共 _TOTAL_ 项。",
+                    "sInfoEmpty": "当前显示第 0 至 0 项，共 0 项",
+                    "sEmptyTable": "表中数据为空",
+                    "sZeroRecords": "没有匹配结果",
+                    "sProcessing": "处理中...",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sLoadingRecords": "载入中...",
+                    "oPaginate": {
+                        "sPrevious": "上一页",
+                        "sNext": "下一页"
+                    }
+                },
+                "iDisplayLength": 50,//每页的行数，每页默认数量:10
+                "aLengthMenu": [50, 100, 200, "全部"],
+                "bAutoWidth": false, //自适应宽度
+                "bFilter": true,//是否显示搜索框
+                "bProcessing": false,                   // 是否显示取数据时的那个等待提示
+                "bServerSide": true,                    //这个用来指明是通过服务端来取数据
+                "sAjaxSource": "/chron/queryData",      //这个是请求的地址
+                "fnServerData": retrieveData,            // 获取数据的处理函数
+                "bSort": true, //是否支持排序功能
+
+
+                //配置列要显示的数据
+                "columns": [
+                    {"data": "id"},
+                    {"data": "cookId"},
+                    {"data": "cookName"},
+                    {"data": "tagId"},
+                    {"data": "tag"},
+                    {"data": "statusDetail"},
+                    {"data": "level"},
+                    {"data": "createTime"},
+                    {"data": "updateTime"},
+                    {"data": null}
+                ],
+
+                "columnDefs": [
+                    {
+                        "bSortable": false,
+                        targets: -1,
+                        defaultContent: "",
+                        mRender : function(data, type, row, meta) {
+                            var html = '  <button class="btn btn-primary btn-xs"  onclick="editInfo('+row.id+')" ' +
+                                'data-toggle="modal" data-target="#update_myModal"> <i class="icon-pencil"></i></button>';
+                            return html;
+                        }
+                    },
+                    {
+                        "bSortable": false,
+                        targets: 1,
+                        defaultContent: "",
+                        mRender : function(data, type, row, meta) {
+                            var html = '<a href="https://www.douguo.com/cookbook/'+row.cookId+'.html">'+row.cookId+'</a>';
+                            return html;
+                        }
+                    }
+                ],
+
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            });
+
+        // 3个参数的名字可以随便命名,但必须是3个参数,少一个都不行
+        function retrieveData(sSource, aoData, fnCallback) {
+            $.ajax({
+                url: sSource,                              //这个就是请求地址对应sAjaxSource
+                data: {"aoData": JSON.stringify(aoData)},   //这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数 ,分页,排序,查询等的值
+                type: 'get',
+                dataType: 'json',
+                async: false,
+                success: function (result) {
+                    fnCallback(result);                     //把返回的数据传给这个方法就可以了,datatable会自动绑定数据的
+                },
+                error: function (msg) {
+                }
+            });
+        }
+
+
+        jQuery('#sample_1 .group-checkable').change(function () {
+            var set = jQuery(this).attr("data-set");
+            var checked = jQuery(this).is(":checked");
+            jQuery(set).each(function () {
+                if (checked) {
+                    $(this).attr("checked", true);
+                } else {
+                    $(this).attr("checked", false);
+                }
+            });
+            jQuery.uniform.update(set);
+        });
+
+        jQuery('#sample_1_wrapper .dataTables_filter input').addClass("form-control"); // modify table search input
+        jQuery('#sample_1_wrapper .dataTables_length select').addClass("form-control"); // modify table per page dropdown
+    }
+
+
+</script>
+</body>
+</html>

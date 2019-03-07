@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="common/common_css :: common_css"></div>
+    <!--alert提示消息-->
+    <link th:href="@{/bootstrap/css/xcConfirm.css}" href="/static/bootstrap/css/xcConfirm.css" rel="stylesheet">
+</head>
+
+<body>
+<div th:replace="pages/head :: head"></div>
+<section id="main-content">
+    <section class="wrapper">
+        <!--page start-->
+        <div id="bill_list" class="row">
+            <div class="col-lg-12">
+                <div class="panel">
+                    <!--头部 位置显示栏-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                        <h4 class="modal-title">es搜索测试页面</h4>
+                    </div>
+                    <!--头部 位置显示栏结束-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ol class="breadcrumb">
+                                <li><a th:href="@{/es/toSearchAdjustPage}" href="search_adjust.html">食材标签调整</a></li>
+                                <li class="active">菜谱搜索</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12"><span>路由:<span id="rout"></span></span></div>
+                    </div>
+                    <div class="row" style="height: 30px">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <span>total:<span id="total"></span>,searchType：<span id="search_type"></span></span>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <label>菜谱搜索:</label>
+                            <label class="input-inline">
+                                <input size="20" class="form-control" id="search_word">
+                            </label>
+                            <button class="btn btn-success" id="search_button"><i class="icon-search"></i>查询</button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <ul id="my_ul">
+                                <li class="item">
+                                    <div>
+                                        <h3><img alt="" th:src="@{/bootstrap/img/search1.jpg}" width="80" height="50"
+                                                 src="/static/bootstrap/img/search202193.jpg"/>鱼香肉丝，标准菜名：鱼香肉丝</h3>
+                                        <p>by 李常 ， rank值：184.41391662，rank_b值：0，等级：A</p>
+                                        <p>
+                                            <span> 93367</span>人收藏
+                                            <span> 554</span>人做过
+                                        </p>
+                                    </div>
+                                    <a href="https://m.douguo.com/cookbook/202193.html"></a>
+                                </li>
+                                <li class="item">
+                                    <div>
+                                        <h3><img alt="" th:src="@{/bootstrap/img/search2.jpg}" width="80" height="50"
+                                                 src="/static/bootstrap/img/search1195924.jpg"/>鱼香肉丝，标准菜名：鱼香肉丝</h3>
+                                        <p>by 李常 ， rank值：184.41391662，rank_b值：0，等级：A</p>
+                                        <p>
+                                            <span> 93367</span>人收藏
+                                            <span> 554</span>人做过
+                                        </p>
+                                    </div>
+                                    <a href="https://m.douguo.com/cookbook/202193.html"></a>
+                                </li>
+                                <li class="item">
+                                    <div>
+                                        <h3><img alt="" th:src="@{/bootstrap/img/search3.jpg}" width="80" height="50"
+                                                 src="/static/bootstrap/img/search186194.jpg"/>鱼香肉丝，标准菜名：鱼香肉丝</h3>
+                                        <p>by 李常 ， rank值：184.41391662，rank_b值：0，等级：A</p>
+                                        <p>
+                                            <span> 93367</span>人收藏
+                                            <span> 554</span>人做过
+                                        </p>
+                                    </div>
+                                    <a href="https://m.douguo.com/cookbook/202193.html"></a>
+                                </li>
+                                <li class="item">
+                                    <div>
+                                        <h3><img alt="" th:src="@{/bootstrap/img/search4.jpg}" width="80" height="50"
+                                                 src="/static/bootstrap/img/search1314324.jpg"/>鱼香肉丝，标准菜名：鱼香肉丝</h3>
+                                        <p>by 李常 ， rank值：184.41391662，rank_b值：0，等级：A</p>
+                                        <p>
+                                            <span> 93367</span>人收藏
+                                            <span> 554</span>人做过
+                                        </p>
+                                    </div>
+                                    <a href="https://m.douguo.com/cookbook/202193.html"></a>
+                                </li>
+                                <li class="item">
+                                    <div>
+                                        <h3><img alt="" th:src="@{/bootstrap/img/search1.jpg}" width="80" height="50"
+                                                 src="/static/bootstrap/img/search202193.jpg"/>鱼香肉丝，标准菜名：鱼香肉丝</h3>
+                                        <p>by 李常 ， rank值：184.41391662，rank_b值：0，等级：A</p>
+                                        <p>
+                                            <span> 93367</span>人收藏
+                                            <span> 554</span>人做过
+                                        </p>
+                                    </div>
+                                    <a href="https://m.douguo.com/cookbook/202193.html"></a>
+                                </li>
+                                <li class="item">
+                                    <div>
+                                        <h3><img alt="" th:src="@{/bootstrap/img/search2.jpg}" width="80" height="50"
+                                                 src="/static/bootstrap/img/search1195924.jpg"/>鱼香肉丝，标准菜名：鱼香肉丝</h3>
+                                        <p>by 李常 ， rank值：184.41391662，rank_b值：0，等级：A</p>
+                                        <p>
+                                            <span> 93367</span>人收藏
+                                            <span> 554</span>人做过
+                                        </p>
+                                    </div>
+                                    <a href="https://m.douguo.com/cookbook/202193.html"></a>
+                                </li>
+                                <li class="item">
+                                    <div>
+                                        <h3><img alt="" th:src="@{/bootstrap/img/search1.jpg}" width="80" height="50"
+                                                 src="/static/bootstrap/img/search202193.jpg"/>鱼香肉丝，标准菜名：鱼香肉丝</h3>
+                                        <p>by 李常 ， rank值：184.41391662，rank_b值：0，等级：A</p>
+                                        <p>
+                                            <span> 93367</span>人收藏
+                                            <span> 554</span>人做过
+                                        </p>
+                                    </div>
+                                    <a href="https://m.douguo.com/cookbook/202193.html"></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input id="data" th:value="${data}" hidden>
+        <!-- page end-->
+    </section>
+</section>
+
+
+<!--引入js 文件-->
+<div th:replace="common/common_js :: common_js"></div>
+<!--script for 提示框-->
+<script th:src="@{/bootstrap/js/xcConfirm.js}" src="/static/bootstrap/js/xcConfirm.js"></script>
+<script type="text/javascript">
+
+    var msg = $("#data").val();
+    var jsonObject = $.parseJSON(msg);
+    $("#my_ul").find('li').remove();
+    $("#my_ul").html(showDayTable(jsonObject.data));
+    $("#search_type").html(jsonObject.searchType);
+    $("#total").html(jsonObject.total);
+    $("#search_word").attr("value", jsonObject.searchWord);
+    $("#rout").html(jsonObject.rout);
+
+
+    $("#search_button").click(function () {
+        toastr.success("正在查询数据......");
+        getData();
+    });
+
+    function getData() {
+        var searchWord = $('#search_word').val();
+        window.location.href = "/es/toPage/" + searchWord + "";
+    }
+
+    function showDayTable(data) {
+        var html;
+        $.each(data, function (i, item) {
+            html += '<li class="item">' +
+                '<div>' +
+                '<a href="https://m.douguo.com/cookbook/' + item.cook_id + '.html">' +
+                '<h3><img alt=""  width="80" height="50" src="https://i1.douguo.com/' + item.cook_image + '"/>' + item.cook_name + ',标准菜谱名：' + item.std_name + '</h3>' +
+                '</a>' +
+                '<p>by  李常 ， rank值：' + item.rank + '，score值：' + item.score + '，等级：' + item.cook_level + '</p>' +
+                '<p><span>' + item.collects_num + '</span>人收藏<span>' + item.dishes_num + '</span>人做过</p>' +
+                '</div>' +
+                '</li>'
+        });
+        return html;
+    }
+</script>
+</body>
+</html>
