@@ -1,0 +1,296 @@
+CorrectBaseController
+    /**
+     * 在线模考列表
+     * @param productId 
+     * @param orderNo
+     * @param modelMap
+     * @return
+     */
+    @RequestMapping(value = "/detail/{productId:\\d+}/{orderNo}",method = RequestMethod.GET)
+    public ModelAndView nextIndex(@PathVariable(value = "productId") int productId,
+                                  @PathVariable(value = "orderNo") String orderNo,
+                                  @RequestParam(value = "nodeId", defaultValue = "") int nodeId,
+                                  @RequestParam(value = "courseId", defaultValue = "") int courseId,
+                                  @RequestParam(value = "from", defaultValue = "") String from,
+                                  ModelMap modelMap) {
+        int userId = getUserId();
+        UserProduct userProduct = null;
+        if (StringUtils.isNotBlank(orderNo)) {
+            userProduct = userProductService.findByOrderNoAndProductId(orderNo, productId);
+        }
+        // 页面来源
+        modelMap.put("source", from);
+        ModelAndView resultView = checkUserProductStatus(userProduct, productId);
+        if (resultView != null) {
+            return resultView;
+        }
+        Product product = productService.findProductById(productId);
+        List<LearningCatalog> parentLearningCatalogList= learningService.findLearningCatalogListByNodeIds(Sets.newHashSet(nodeId));
+        if (CollectionUtils.isNotEmpty(parentLearningCatalogList)){
+            List<Object> list=userCorrectBizService.getExamDetailByLearning(nodeId,courseId,userId);
+            if (CollectionUtils.isNotEmpty(list) && CollectionUtils.isNotEmpty(parentLearningCatalogList)) {
+                modelMap.put("parentName",parentLearningCatalogList.get(0).getName());
+                modelMap.put("courseId",courseId);
+                modelMap.put("zxmkList", list);
+                modelMap.put("productName",product.getName());
+                modelMap.put("productId",productId);
+                modelMap.put("orderNo",orderNo);
+                modelMap.put("productUrl", "/tongyong/course/" + productId + "/" + orderNo);
+            }
+        }
+
+        return new ModelAndView("/service/correct_list_detail");
+    }
+
+
+    /**
+     * 获取批改服务里在线模考里的数据内容
+     * @param userId 用户ID
+     * @param courseId 课程ID
+     * @param learningSubjectIds  学习路径集合
+     * @return
+     */
+    public List<Object> getLearningCatalogByLearningSubjectId(int userId,int courseId,List<Integer>  learningSubjectIds){
+
+        List<Object>  resultList=Lists.newArrayList();
+
+        //通过学习路径获取
+        Map<Integer,List<LearningCatalogExam>> listMap=userCorrectBizService.getPiGaiServiceData(learningSubjectIds);
+        if (MapUtils.isEmpty(listMap)){
+            return resultList;
+        }
+
+        Set<Integer> lcNodeIdSet= Sets.newHashSet();
+        for (Entry<Integer,List<LearningCatalogExam>> entry : listMap.entrySet()){
+            if (CollectionUtils.isEmpty(entry.getValue())){
+                continue;
+            }
+            lcNodeIdSet.addAll(entry.getValue().stream().map(LearningCatalogExam::getLcNodeId).collect(Collectors.toList()));
+        }
+        if (CollectionUtils.isEmpty(lcNodeIdSet)){
+            return resultList;
+        }
+
+        //通过节点ID获取code
+        List<LearningCatalog> learningCatalogList= learningService.findLearningCatalogListByNodeIds(lcNodeIdSet);
+        if (CollectionUtils.isEmpty(learningCatalogList)){
+            return resultList;
+        }
+
+        //获取所有学习路径一级节点信息
+        Map<Integer, List<LearningCatalog>> learningCatalogMap=learningService.findTopParentMapByLearningSubjectIdNodeIds(listMap.keySet(),lcNodeIdSet);
+        if (MapUtils.isEmpty(learningCatalogMap)){
+            return resultList;
+        }
+        //按课表上的学习路径排序
+        List<LearningCatalog> sortLearningCatalogList=Lists.newArrayList();
+        for (Integer integer:learningSubjectIds){
+            if (learningCatalogMap.keySet().contains(integer)){
+                sortLearningCatalogList.addAll(learningCatalogMap.get(integer));
+            }
+        }
+
+        //获取已经提交的考试次数信息
+        List<UserExamInfo> newUserExamInfoList= userExamInfoService.getSubmittedByUserIdCourseIdsAndNodeIdList(userId,Lists.newArrayList(courseId), CourseLearningEnums.Normal,Lists.newArrayList(lcNodeIdSet), ExamTypeEnums.Normal);
+        //通过userID、courseID、examID过滤多次考试记录信息
+        List<UserExamInfo> userExamInfoList= UserExamInfoUtil.filterUserExamInfoRepeatUtil(newUserExamInfoList);
+
+
+        if (CollectionUtils.isNotEmpty(sortLearningCatalogList)){
+            for (LearningCatalog learningCatalog:sortLearningCatalogList){
+                Map<String,Object> tempMap=Maps.newHashMap();
+                //获取总次数
+                Map<String,Integer>  numMap=UserExamInfoUtil.totalExamNumUtil(learningCatalog,learningCatalogList,userExamInfoList,courseId);
+                if (MapUtils.isEmpty(numMap)||numMap.get("totalCount")<1){
+                    continue;
+                }
+                tempMap.put("submitCount",numMap.get("submitCount"));
+                tempMap.put("nodeId",learningCatalog.getNodeId());
+                tempMap.put("courseId",courseId);
+                tempMap.put("name",learningCatalog.getName());
+                tempMap.put("totalCount",numMap.get("totalCount"));
+                tempMap.put("typeName", QuestionType.ZXMK.getName());
+                tempMap.put("type",1);
+                resultList.add(tempMap);
+            }
+        }
+        return resultList;
+    }
+	
+UserExamInfoUtil	
+
+    /**
+     *  通过userID、courseID、examID过滤多次考试记录信息
+     * @param userExamInfoList 考试信息集合
+     * @return
+     */
+    public static List<UserExamInfo> filterUserExamInfoRepeatUtil(List<UserExamInfo> userExamInfoList){
+        List<UserExamInfo> resultList=Lists.newArrayList();
+        // 通过userID、courseID、examID过滤多次考试记录信息
+        if (CollectionUtils.isNotEmpty(userExamInfoList)){
+            //分组
+            Map<String,List<UserExamInfo>> groupByMap =userExamInfoList.stream().collect(Collectors.groupingBy(userExamInfo->userExamInfo.getUserId()+userExamInfo.getCourseId()+userExamInfo.getExamId().toString()));
+            for (Map.Entry<String,List<UserExamInfo>> entry:groupByMap.entrySet()){
+                if (entry.getValue()!=null){
+                    //排序  isSubmit倒排取第一个
+                    resultList.addAll(entry.getValue().stream().sorted(Comparator.comparing(UserExamInfo::getIsSubmit).reversed()).limit(1).collect(Collectors.toList()));
+                }
+            }
+        }
+        return resultList;
+    }
+
+    /**
+     * 获取考试总次数和已经提交的总次数
+     * @param prlearningCatalog 一级节点信息
+     * @param childLearningCatalogList  末级节点集合信息
+     * @param userExamInfoList  考试信息
+     * @return
+     */
+    public static Map<String,Integer> totalExamNumUtil(LearningCatalog prlearningCatalog, List<LearningCatalog> childLearningCatalogList, List<UserExamInfo> userExamInfoList, int coursId){
+        int totalNum=0;
+        Long submitNum=0L;
+
+        Map<String,Integer>   resultMap= Maps.newHashMap();
+
+        if (prlearningCatalog==null || CollectionUtils.isEmpty(childLearningCatalogList)){
+            return resultMap;
+        }
+        //获得总次数
+        List<Integer> list=childLearningCatalogList.stream().filter(childLearningCatalog->childLearningCatalog.getLsVersionId().equals(prlearningCatalog.getLsVersionId())
+                && childLearningCatalog.getCode().startsWith(prlearningCatalog.getCode())).map(LearningCatalog::getNodeId).collect(Collectors.toList());
+
+        //获得已经提交的次数
+        if (CollectionUtils.isNotEmpty(userExamInfoList)){
+            submitNum= userExamInfoList.stream().filter(userExamInfo->userExamInfo.getCourseId().equals(coursId)&&list.contains(userExamInfo.getNodeId())).count();
+        }
+
+        resultMap.put("totalCount",totalNum);
+        resultMap.put("submitCount",submitNum.intValue());
+        return resultMap;
+    }	
+
+
+
+UserCorrectBizServiceImpl
+
+   @Override
+    public List<Object> getExamDetailByLearning(int nodeId, int courseId, int userId) {
+        List<Object> resultList=Lists.newArrayList();
+        //拿到含有批改服务的节点信息  ------start
+
+        //通过父节点nodeId获取所有父节点下带有模考且未复合考试的子节点的考试节点信息
+        List<LearningCatalogExam> learningCatalogExamList=learningService.findLearningCatalogFamilyExamByParentNodeId(nodeId);
+
+
+        if (CollectionUtils.isEmpty(learningCatalogExamList)){
+            return resultList;
+        }
+        List<Integer>  examIds= learningCatalogExamList.stream().map(LearningCatalogExam::getExamId).collect(Collectors.toList());
+
+        List<Integer> statusNodeId=Lists.newArrayList();
+        try{
+            //判断复合考试里是否含有批改服务 key 为examId  value 为是否含有批改服务
+            Map<Integer, Object>  examStatusMap=ieltsService.judgeContainPiGai(examIds);
+            //含有批改服务的examId集合
+            List<Integer>  examStatusList=examStatusMap.entrySet().stream().filter(entry-> entry.getValue()!=null &&(Boolean) entry.getValue())
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+            //拿到含有批改服务的节点ID
+            statusNodeId=learningCatalogExamList.stream().filter(learningCatalogExam->examStatusList.contains(learningCatalogExam.getExamId()))
+                    .map(LearningCatalogExam::getLcNodeId).collect(Collectors.toList());
+        }catch (Exception e){
+            logger.error("批改服务数据转换异常，方法:getExamDetailByLearning  examIdList:{},Exception:{}",examIds,e);
+            return resultList;
+        }
+        //拿到含有批改服务的节点信息  ------end
+
+        //通过节点ID获取code
+        List<LearningCatalog> learningCatalogList= learningService.findLearningCatalogListByNodeIds(Sets.newHashSet(statusNodeId));
+
+        if (CollectionUtils.isEmpty(learningCatalogList)){
+            return resultList;
+        }
+
+        List<UserExamInfo> userExamInfoList =userExamInfoService.getByUserIdCourseIdsAndNodeIdList(userId,Lists.newArrayList(courseId), CourseLearningEnums.Normal,statusNodeId, ExamTypeEnums.Normal);
+        //通过userID、courseID、examID过滤多次考试记录信息
+        List<UserExamInfo> newUserExamInfoList= UserExamInfoUtil.filterUserExamInfoRepeatUtil(userExamInfoList);
+
+
+        for (LearningCatalog learningCatalog:learningCatalogList){
+            Map<String,Object> tempMap= Maps.newHashMap();
+            tempMap.put("name",learningCatalog.getName());
+            tempMap.put("typeName", QuestionType.ZXMK.getName());
+            tempMap.put("type",1);
+            tempMap.put("nodeId",learningCatalog.getNodeId());
+            boolean flage=true;
+            //封装考试结果状态信息
+            if (CollectionUtils.isNotEmpty(newUserExamInfoList)){
+                for (UserExamInfo userExamInfo:newUserExamInfoList){
+                    if (userExamInfo!=null&&userExamInfo.getNodeId().equals(learningCatalog.getNodeId())){
+                        if (userExamInfo.getIsSubmit()== ExamStatusEnums.ALL_ANSWER.getValue()){
+                            tempMap.put("status", ExamStatusEnums.ALL_ANSWER.getValue());
+                        }else {
+                            tempMap.put("status", ExamStatusEnums.PART_ANSWER.getValue());
+                        }
+                        tempMap.put("examResultId",userExamInfo.getExamResultId());
+                        flage=false;
+                        break;
+                    }
+                }
+            }
+            //未查询到考试结果信息
+            if (flage){
+                tempMap.put("status",ExamStatusEnums.NOT_ANSWER.getValue());
+            }
+            resultList.add(tempMap);
+        }
+
+
+        return resultList;
+}
+
+    @Override
+    public Map<Integer, List<LearningCatalogExam>> getPiGaiServiceData(List<Integer> learningSubjectIds) {
+
+        Map<Integer, List<LearningCatalogExam>> resultLearningCatalogExamList=Maps.newHashMap();
+
+        List<Integer> examIdList=Lists.newArrayList();
+
+        //通过学习路径获取学习路径下所有模考为复合考试的节点  返回key为学习路径，value为该学习路径下的节点
+        Map<Integer,List<LearningCatalogExam>> listMap= learningService.findLearningCatalogFamilyExam(Sets.newHashSet(learningSubjectIds));
+
+        if (MapUtils.isEmpty(listMap)){
+            return resultLearningCatalogExamList;
+        }
+
+        for (Map.Entry<Integer,List<LearningCatalogExam>> entry : listMap.entrySet()){
+            if (CollectionUtils.isEmpty(entry.getValue())){
+                continue;
+            }
+            List<Integer>  examList =  entry.getValue().stream().map(LearningCatalogExam::getExamId).collect(Collectors.toList());
+            examIdList.addAll(examList);
+        }
+
+        try{
+            //判断复合考试里是否含有批改服务
+            Map<Integer, Object> examStatusMap=ieltsService.judgeContainPiGai(examIdList);
+            //含有批改服务的examId集合
+            List<Integer>  examIdStatusList=examStatusMap.entrySet().stream().filter(entry-> entry.getValue()!=null &&(Boolean) entry.getValue())
+                    .map(Map.Entry::getKey).collect(Collectors.toList());
+
+            //去掉不包含批改服务的节点  key为学习路径Id
+            for (Map.Entry<Integer,List<LearningCatalogExam>> entry : listMap.entrySet()){
+                if (CollectionUtils.isEmpty(entry.getValue())){
+                    continue;
+                }
+                List<LearningCatalogExam> tempList= entry.getValue().stream()
+                        .filter(learningCatalogExam -> examIdStatusList.contains(learningCatalogExam.getExamId())).collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(tempList)){
+                    resultLearningCatalogExamList.put(entry.getKey(),tempList);
+                }
+            }
+        }catch (Exception e){
+            logger.error("批改服务数据转换异常，方法:getPiGaiServiceData  examIdList:{},Exception:{}",examIdList,e);
+        }
+        return resultLearningCatalogExamList;
+    }
